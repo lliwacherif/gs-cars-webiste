@@ -19,7 +19,11 @@ async function bootstrap() {
   const { join } = await import('path');
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ extended: true, limit: '100mb' }));
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  const uploadsDirectory = join(process.cwd(), 'uploads');
+  // Keep the legacy route for existing direct links, and expose the canonical
+  // route below /api so it passes through the production Nginx API proxy.
+  app.use('/uploads', express.static(uploadsDirectory));
+  app.use('/api/uploads', express.static(uploadsDirectory));
 
   // ── Global prefix ────────────────────────────────────────────────────────
   app.setGlobalPrefix('api');

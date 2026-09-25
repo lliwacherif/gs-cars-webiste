@@ -69,7 +69,7 @@ export class UploadService {
     await writeFile(join(UPLOAD_DIR, filename), file.buffer);
 
     return {
-      secure_url: `/uploads/${filename}`,
+      secure_url: `/api/uploads/${filename}`,
       public_id: filename,
       width: 0,
       height: 0,
