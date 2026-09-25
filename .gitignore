@@ -18,6 +18,7 @@ dist
 dist-ssr
 backend/dist
 backend/node_modules
+backend/uploads
 Tunisia-Car-Rental-main/
 *.local
 

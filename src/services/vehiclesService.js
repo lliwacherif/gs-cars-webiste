@@ -106,9 +106,7 @@ export const uploadService = {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', folder)
-    const res = await api.post('/upload/image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    const res = await api.post('/upload/image', formData)
     return res.data.data // { url, publicId, width, height, format }
   },
 

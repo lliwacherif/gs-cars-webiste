@@ -276,7 +276,10 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
     try {
       const r = await uploadService.uploadImage(file, 'tunisia-car-rental/vehicles')
       setImages(p => [...p, r.url])
-    } catch { setError('Erreur upload image.') }
+    } catch (err) {
+      const msg = err?.response?.data?.message
+      setError(Array.isArray(msg) ? msg[0] : (msg || 'Erreur upload image.'))
+    }
     finally { setUploading(false) }
   }
 

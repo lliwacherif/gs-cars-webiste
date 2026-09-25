@@ -16,8 +16,10 @@ async function bootstrap() {
   // NestJS wraps Express — increase limits so large GLB multipart uploads
   // (up to 50 MB) are not silently rejected at the HTTP layer.
   const express = await import('express');
+  const { join } = await import('path');
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ extended: true, limit: '100mb' }));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   // ── Global prefix ────────────────────────────────────────────────────────
   app.setGlobalPrefix('api');

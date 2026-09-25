@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { randomBytes } from 'crypto';
+import { mkdir, unlink, writeFile } from 'fs/promises';
+import { extname, join } from 'path';
 import { Readable } from 'stream';
+
+const UPLOAD_DIR = join(process.cwd(), 'uploads');
+const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
 
 @Injectable()
 export class UploadService {
+  private readonly cloudinaryReady: boolean;
+
   constructor(private readonly configService: ConfigService) {
-    // ── Cloudinary (images) ───────────────────────────────────────────────
-    try {
-      cloudinary.config({
-        cloud_name: configService.get<string>('cloudinary.cloudName'),
-        api_key:    configService.get<string>('cloudinary.apiKey'),
-        api_secret: configService.get<string>('cloudinary.apiSecret'),
-      });
-    } catch (e) {}
+    const cloudName = configService.get<string>('cloudinary.cloudName');
+    const apiKey = configService.get<string>('cloudinary.apiKey');
+    const apiSecret = configService.get<string>('cloudinary.apiSecret');
+    this.cloudinaryReady = Boolean(cloudName && apiKey && apiSecret);
+    if (this.cloudinaryReady) {
+      cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
+    }
   }
 
   // ── Image upload → Cloudinary ──────────────────────────────────────────
   async uploadImage(
     file: Express.Multer.File,
     folder = 'tunisia-car-rental',
+    baseUrl = 'http://localhost:3000',
   ): Promise<UploadApiResponse> {
+    if (!this.cloudinaryReady) return this.saveLocalImage(file, baseUrl);
+
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -52,9 +62,29 @@ export class UploadService {
     throw new Error('3D model upload is disabled');
   }
 
-  // ── Image delete → Cloudinary ─────────────────────────────────────────
+  private async saveLocalImage(file: Express.Multer.File, baseUrl: string): Promise<UploadApiResponse> {
+    await mkdir(UPLOAD_DIR, { recursive: true });
+    const rawExt = extname(file.originalname || '').toLowerCase();
+    const ext = IMAGE_EXTS.has(rawExt) ? rawExt : '.jpg';
+    const filename = `${Date.now()}-${randomBytes(6).toString('hex')}${ext}`;
+    await writeFile(join(UPLOAD_DIR, filename), file.buffer);
+
+    return {
+      secure_url: `${baseUrl.replace(/\/$/, '')}/uploads/${filename}`,
+      public_id: filename,
+      width: 0,
+      height: 0,
+      format: ext.slice(1),
+    } as UploadApiResponse;
+  }
+
+  // ── Image delete → Cloudinary or local disk ──────────────────────────
   async deleteImage(publicId: string): Promise<void> {
-    await cloudinary.uploader.destroy(publicId);
+    if (!publicId.includes('/') && !this.cloudinaryReady) {
+      await unlink(join(UPLOAD_DIR, publicId)).catch(() => undefined);
+      return;
+    }
+    if (this.cloudinaryReady) await cloudinary.uploader.destroy(publicId);
   }
 
   extractPublicId(url: string): string {
