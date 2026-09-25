@@ -24,7 +24,7 @@ export class ReservationsService {
   ) {}
 
   // ── Create ───────────────────────────────────────────────────────────────
-  async create(dto: CreateReservationDto, userId: string) {
+  async create(dto: CreateReservationDto, userId?: string) {
     const vehicle = await this.vehiclesService.findOne(dto.vehicleId);
 
     if (vehicle.status !== VehicleStatus.DISPONIBLE || !vehicle.isActive) {
@@ -33,7 +33,22 @@ export class ReservationsService {
 
     const pickup  = new Date(dto.pickupDate);
     const dropoff = new Date(dto.dropoffDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (pickup < today) throw new BadRequestException('Pick-up date cannot be in the past');
     if (dropoff <= pickup) throw new BadRequestException('Drop-off date must be after pick-up date');
+
+    const guestContact = dto.guestContact
+      ? {
+          fullName: dto.guestContact.fullName.trim(),
+          phone: dto.guestContact.phone.trim(),
+          email: dto.guestContact.email?.trim().toLowerCase() || undefined,
+        }
+      : null;
+
+    if (!userId && (!guestContact?.fullName || !guestContact.phone)) {
+      throw new BadRequestException('Guest full name and phone number are required');
+    }
 
     // Conflict check — only CONFIRMED reservations actually lock the car
     const conflict = await this.reservationModel.findOne({
@@ -58,12 +73,14 @@ export class ReservationsService {
     const remaining  = totalTTC;
     const paymentStatus = PaymentStatus.PENDING;
 
-    const reqPct = dto.paymentOption === 'moitie' ? 50 : dto.paymentOption === 'total' ? 100 : 10;
+    const paymentOption = dto.paymentOption ?? PaymentOption.ACOMPTE;
+    const reqPct = paymentOption === PaymentOption.MOITIE ? 50 : paymentOption === PaymentOption.TOTAL ? 100 : 10;
     const reqAmt = parseFloat((totalTTC * (reqPct / 100)).toFixed(2));
 
     const reservation = await this.reservationModel.create({
       vehicle:          new Types.ObjectId(dto.vehicleId),
-      user:             new Types.ObjectId(userId),
+      user:             userId ? new Types.ObjectId(userId) : null,
+      guestContact:     userId ? null : guestContact,
       pickupLocation:   dto.pickupLocation,
       dropoffLocation:  dto.dropoffLocation,
       pickupDate:       pickup,
@@ -75,7 +92,7 @@ export class ReservationsService {
       tva,
       totalTTC,
       depositAmount:    vehicle.depositAmount ?? 0,
-      paymentOption:    dto.paymentOption,
+      paymentOption,
       amountPaid,
       remainingBalance: remaining,
       paymentStatus,
@@ -108,7 +125,9 @@ export class ReservationsService {
   async findOne(id: string, userId: string, userRole: string) {
     const r = await this.reservationModel.findById(id).populate('vehicle').populate('user', '-password').exec();
     if (!r) throw new NotFoundException('Reservation not found');
-    if (userRole !== 'admin' && r.user.toString() !== userId) throw new ForbiddenException('Access denied');
+    if (userRole !== 'admin' && (!r.user || r.user.toString() !== userId)) {
+      throw new ForbiddenException('Access denied');
+    }
     return r;
   }
 
@@ -171,12 +190,14 @@ export class ReservationsService {
     if (existing.status === ReservationStatus.RECU && dto.status === ReservationStatus.PENDING) {
       const userObj = reservation.user as any;
       const vehicleObj = reservation.vehicle as any;
-      if (userObj?.email) {
+      const email = userObj?.email || reservation.guestContact?.email;
+      const firstName = userObj?.firstName || reservation.guestContact?.fullName || 'Client';
+      if (email) {
         const pct = (update.requiredDepositPercentage as number) ?? reservation.requiredDepositPercentage ?? 30;
         const amt = (update.requiredDepositAmount as number) ?? reservation.requiredDepositAmount ?? (reservation.totalTTC * 0.3);
         await this.mailService.sendReservationApproval(
-          userObj.email,
-          userObj.firstName || 'Client',
+          email,
+          firstName,
           reservation._id.toString(),
           vehicleObj?.name || 'Véhicule',
           pct,

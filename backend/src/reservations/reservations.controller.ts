@@ -13,16 +13,16 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 
 @ApiTags('Reservations')
 @ApiBearerAuth('JWT')
 @Controller('reservations')
-@UseGuards(JwtAuthGuard)
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   /**
-   * Creates a new reservation for the authenticated user.
+   * Creates a reservation for a guest or authenticated user.
    *
    * Server-side logic:
    * - Checks that the vehicle is `Disponible` and `isActive`.
@@ -32,20 +32,20 @@ export class ReservationsController {
    * - Marks the vehicle status as `Réservé` on success.
    */
   @Post()
+  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({
     summary: 'Create a reservation',
     description:
-      'Books a vehicle for the authenticated user. Pricing is calculated server-side.\n\n' +
+      'Books a vehicle as a guest or authenticated user. Guests provide a required full name and phone number; email is optional. Pricing is calculated server-side.\n\n' +
       '**Conflict detection:** will reject if the vehicle is already reserved for the requested dates.\n\n' +
       '**TVA:** 19% is included in `pricePerDay` — totals are broken down into HT + TVA + TTC.',
   })
   @ApiBody({ type: CreateReservationDto })
   @ApiResponse({ status: 201, description: 'Reservation created — vehicle status set to Réservé' })
   @ApiResponse({ status: 400, description: 'Vehicle unavailable, date conflict, or validation error' })
-  @ApiResponse({ status: 401, description: 'Unauthorized — login required' })
   create(
     @Body() dto: CreateReservationDto,
-    @CurrentUser('_id') userId: string,
+    @CurrentUser('_id') userId?: string,
   ) {
     return this.reservationsService.create(dto, userId);
   }
@@ -55,6 +55,7 @@ export class ReservationsController {
    * Admins see ALL reservations; customers see only their own.
    */
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'List reservations',
     description: '**Admin:** returns all reservations.\n**Customer:** returns only own reservations.',
@@ -72,7 +73,7 @@ export class ReservationsController {
    * Used by the admin dashboard sidebar widget.
    */
   @Get('upcoming')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: '[Admin] Get upcoming reservations' })
   getUpcoming() {
@@ -84,7 +85,7 @@ export class ReservationsController {
    * All numbers come from real DB aggregations, nothing is hardcoded.
    */
   @Get('stats')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: '[Admin] Dashboard stats (revenue, counts, top vehicles)' })
   getStats() {
@@ -95,7 +96,7 @@ export class ReservationsController {
    * Admin-only: full reservation history for a specific vehicle.
    */
   @Get('vehicle/:vehicleId/history')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: '[Admin] Reservation history for a vehicle' })
   getVehicleHistory(@Param('vehicleId') vehicleId: string) {
@@ -108,7 +109,7 @@ export class ReservationsController {
    * Must be declared BEFORE GET :id to avoid route collision.
    */
   @Get('calendar')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: '[Admin] Calendar data for a date range' })
   getCalendar(
@@ -123,6 +124,7 @@ export class ReservationsController {
    * Admins can fetch any; customers can only fetch their own.
    */
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Get reservation by ID',
     description: 'Returns full reservation detail. Customers can only access their own reservations.',
@@ -146,7 +148,7 @@ export class ReservationsController {
    * - Setting status to `cancelled` or `completed` marks the vehicle back as `Disponible`.
    */
   @Patch(':id/status')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({
     summary: '[Admin] Update reservation status',
@@ -170,7 +172,7 @@ export class ReservationsController {
    * Also resyncs the related vehicle status (Disponible / Réservé).
    */
   @Delete(':id')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({
     summary: '[Admin] Delete a reservation',

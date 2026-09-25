@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { FiHeart, FiMapPin, FiCalendar, FiUser, FiCheck, FiChevronLeft, FiChevronRight, FiShield, FiInfo, FiChevronUp, FiChevronDown, FiAlertCircle } from 'react-icons/fi'
+import { FiHeart, FiMapPin, FiCalendar, FiUser, FiCheck, FiChevronLeft, FiChevronRight, FiShield, FiChevronUp, FiChevronDown, FiAlertCircle } from 'react-icons/fi'
 import { vehiclesService, reservationsService, holdsService, parcsService } from '../../services/vehiclesService'
 import { mediaUrl } from '../../mediaUrl'
 import { useAuth } from '../../context/AuthContext'
-import { useLanguage } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import AdminStrip from '../../components/AdminStrip/AdminStrip'
 import Navbar from '../../components/Navbar/Navbar'
@@ -19,8 +18,7 @@ export default function VehicleDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user, openAuthModal, pendingBooking, clearPendingBooking } = useAuth()
-  const { t } = useLanguage()
+  const { user, openAuthModal } = useAuth()
   const { formatPrice } = useCurrency()
 
   // Pre-fill from URL query string (passed from SearchResults / BookingForm)
@@ -49,9 +47,14 @@ export default function VehicleDetail() {
     driverAge: effectiveAge,
   })
   const [submitting, setSubmitting] = useState(false)
-  const [bookingSuccess, setBookingSuccess] = useState(false)
+  const [bookingSuccess, setBookingSuccess] = useState(null)
   const [bookingError, setBookingError] = useState(null)
   const [acceptAlternative, setAcceptAlternative] = useState(true)
+  const [guestContact, setGuestContact] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+  })
   // Track hold id so we can release it if the user cancels, and pass it to
   // reservationsService.create so it gets released server-side after booking
   const holdIdRef = useRef(null)
@@ -68,25 +71,16 @@ export default function VehicleDetail() {
     setSubmitting(true)
     setBookingError(null)
     try {
-      await reservationsService.create(data)
+      const reservation = await reservationsService.create(data)
       holdIdRef.current = null
-      navigate('/historique')
+      if (user) navigate('/historique')
+      else setBookingSuccess(reservation)
     } catch (err) {
       setBookingError(err?.response?.data?.message || 'Erreur lors de la réservation.')
     } finally {
       setSubmitting(false)
     }
   }
-
-  // After successful login/register, if there's a pending booking for THIS
-  // vehicle, auto-submit it so the user doesn't have to click again.
-  // Must be before early returns to keep hook call order stable.
-  useEffect(() => {
-    if (user && pendingBooking && pendingBooking.vehicleId === id) {
-      clearPendingBooking()
-      submitReservation(pendingBooking)
-    }
-  }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const fetch = async () => {
@@ -162,9 +156,30 @@ export default function VehicleDetail() {
       return
     }
 
+    const normalizedGuestContact = {
+      fullName: guestContact.fullName.trim(),
+      phone: guestContact.phone.trim(),
+      ...(guestContact.email.trim() && { email: guestContact.email.trim().toLowerCase() }),
+    }
+
+    if (!user) {
+      if (!normalizedGuestContact.fullName || !normalizedGuestContact.phone) {
+        setBookingError('Veuillez renseigner votre nom complet et votre téléphone.')
+        return
+      }
+      if (normalizedGuestContact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedGuestContact.email)) {
+        setBookingError('Veuillez saisir une adresse email valide.')
+        return
+      }
+      if (!/^[0-9+().\-\s]{6,30}$/.test(normalizedGuestContact.phone)) {
+        setBookingError('Veuillez saisir un numéro de téléphone valide.')
+        return
+      }
+    }
+
     setBookingError(null)
 
-    // Step 1 — place a hold to lock the car+dates while the user auth/pays
+    // Place a short hold while the reservation request is being stored.
     let holdId = holdIdRef.current
     if (!holdId) {
       try {
@@ -180,23 +195,8 @@ export default function VehicleDetail() {
       }
     }
 
-    // Step 2 — if not logged in, open auth modal with booking context preserved
-    if (!user) {
-      openAuthModal('login', {
-        vehicleId: car._id,
-        pickupDate: booking.pickupDate,
-        dropoffDate: booking.dropoffDate,
-        pickupLocation: booking.pickupLocation,
-        dropoffLocation: booking.dropoffLocation,
-        driverAge: booking.driverAge,
-        paymentOption: paymentOptions[paymentOption].key,
-        holdId,
-        acceptAlternative,
-      })
-      return
-    }
-
-    // Step 3 — user is logged in, create the reservation
+    // Guests submit contact details directly; authenticated users are linked
+    // to their account by the optional JWT on the same endpoint.
     await submitReservation({
       vehicleId: car._id,
       pickupDate: booking.pickupDate,
@@ -204,9 +204,11 @@ export default function VehicleDetail() {
       pickupLocation: booking.pickupLocation,
       dropoffLocation: booking.dropoffLocation,
       driverAge: effectiveAge,   // always use account age when logged in
-      paymentOption: paymentOptions[paymentOption].key,
       holdId,
       acceptAlternative,
+      ...(user
+        ? { paymentOption: paymentOptions[paymentOption].key }
+        : { guestContact: normalizedGuestContact }),
     })
   }
 
@@ -376,11 +378,20 @@ export default function VehicleDetail() {
         {/* RIGHT sticky panel */}
         <div className="vd-right">
           {bookingSuccess ? (
-            <div className="vd-panel" style={{ textAlign: 'center', padding: 32 }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-              <h3 style={{ color: '#16a34a', marginBottom: 8 }}>Réservation confirmée!</h3>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 20 }}>Votre réservation a été créée avec succès. Vous recevrez une confirmation par email.</p>
-              <button onClick={() => navigate('/')} style={{ background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 24px', cursor: 'pointer', fontSize: 14, fontWeight: 600, fontFamily: 'inherit' }}>Retour à l'accueil</button>
+            <div className="vd-panel vd-success">
+              <div className="vd-success__icon">✓</div>
+              <p className="vd-success__eyebrow">Demande reçue</p>
+              <h3 className="vd-success__title">Réservation enregistrée</h3>
+              <p className="vd-success__text">
+                Notre équipe vous contactera au <strong>{guestContact.phone}</strong> pour confirmer votre réservation.
+                {guestContact.email && <> Un message pourra aussi être envoyé à <strong>{guestContact.email}</strong>.</>}
+              </p>
+              <div className="vd-success__code">
+                <span>Votre référence</span>
+                <strong>#GSC-{bookingSuccess._id?.slice(-6).toUpperCase()}</strong>
+              </div>
+              <p className="vd-success__hint">Conservez cette référence pour vos échanges avec l'agence.</p>
+              <button className="vd-success__home" onClick={() => navigate('/')}>Retour à l'accueil</button>
             </div>
           ) : (
             <div className="vd-panel">
@@ -412,26 +423,74 @@ export default function VehicleDetail() {
                 <div><span className="vd-panel__no-fees-title">Aucun frais caché</span><span className="vd-panel__no-fees-sub">Le prix final est affiché.</span></div>
               </div>
 
-              <div className="vd-panel__divider" />
-              <h4 className="vd-panel__pay-title">Choisissez le montant à payer</h4>
+              {user && (
+                <>
+                  <div className="vd-panel__divider" />
+                  <h4 className="vd-panel__pay-title">Choisissez le montant à payer</h4>
 
-              <div className="vd-slider">
-                <div className="vd-slider__track">
-                  <div className="vd-slider__fill" style={{ width: paymentOption === 0 ? '5%' : paymentOption === 1 ? '50%' : '100%' }} />
-                  {[0,1,2].map(i => <div key={i} className={`vd-slider__dot ${paymentOption === i ? 'vd-slider__dot--active' : ''}`} style={{ left: i===0?'0%':i===1?'50%':'100%' }} onClick={() => setPaymentOption(i)} />)}
-                </div>
-                <div className="vd-slider__labels">
-                  {paymentOptions.map((opt, i) => (
-                    <button key={i} className={`vd-slider__opt ${paymentOption === i ? 'vd-slider__opt--active' : ''}`} onClick={() => setPaymentOption(i)}>
-                      <span className="vd-slider__opt-label">{opt.label}</span>
-                      <span className="vd-slider__opt-pct">{opt.pct}</span>
-                      <span className="vd-slider__opt-amount">{formatPrice(parseFloat(opt.amount))}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                  <div className="vd-slider">
+                    <div className="vd-slider__track">
+                      <div className="vd-slider__fill" style={{ width: paymentOption === 0 ? '5%' : paymentOption === 1 ? '50%' : '100%' }} />
+                      {[0,1,2].map(i => <div key={i} className={`vd-slider__dot ${paymentOption === i ? 'vd-slider__dot--active' : ''}`} style={{ left: i===0?'0%':i===1?'50%':'100%' }} onClick={() => setPaymentOption(i)} />)}
+                    </div>
+                    <div className="vd-slider__labels">
+                      {paymentOptions.map((opt, i) => (
+                        <button key={i} className={`vd-slider__opt ${paymentOption === i ? 'vd-slider__opt--active' : ''}`} onClick={() => setPaymentOption(i)}>
+                          <span className="vd-slider__opt-label">{opt.label}</span>
+                          <span className="vd-slider__opt-pct">{opt.pct}</span>
+                          <span className="vd-slider__opt-amount">{formatPrice(parseFloat(opt.amount))}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="vd-panel__pay-now"><span>Vous payez maintenant</span><span className="vd-panel__pay-now-val">{formatPrice(toPay)}</span></div>
+                  <div className="vd-panel__pay-now"><span>Vous payez maintenant</span><span className="vd-panel__pay-now-val">{formatPrice(toPay)}</span></div>
+                </>
+              )}
+
+              {!user && (
+                <div className="vd-guest">
+                  <div className="vd-guest__header">
+                    <div>
+                      <h4>Vos coordonnées</h4>
+                      <p>Aucun compte nécessaire</p>
+                    </div>
+                    <span>Visiteur</span>
+                  </div>
+                  <div className="vd-guest__grid">
+                    <label className="vd-guest__field vd-guest__field--full">
+                      <span>Nom complet *</span>
+                      <input
+                        value={guestContact.fullName}
+                        onChange={event => setGuestContact(contact => ({ ...contact, fullName: event.target.value }))}
+                        autoComplete="name"
+                        maxLength={160}
+                      />
+                    </label>
+                    <label className="vd-guest__field vd-guest__field--full">
+                      <span>Téléphone *</span>
+                      <input
+                        type="tel"
+                        value={guestContact.phone}
+                        onChange={event => setGuestContact(contact => ({ ...contact, phone: event.target.value }))}
+                        autoComplete="tel"
+                        maxLength={30}
+                        placeholder="+216 20 123 456"
+                      />
+                    </label>
+                    <label className="vd-guest__field vd-guest__field--full">
+                      <span>Email <small>(facultatif)</small></span>
+                      <input
+                        type="email"
+                        value={guestContact.email}
+                        onChange={event => setGuestContact(contact => ({ ...contact, email: event.target.value }))}
+                        autoComplete="email"
+                        maxLength={254}
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
 
               {/* Alternative vehicle checkbox */}
               <label
@@ -465,63 +524,66 @@ export default function VehicleDetail() {
               )}
 
               <button className="vd-panel__cta" onClick={handleReserve} disabled={submitting}>
-                {submitting ? 'Réservation...' : 'Click to Pay'}
+                {submitting ? 'Réservation...' : user ? 'Confirmer la réservation' : 'Réserver sans compte'}
               </button>
 
-              <button
-                type="button"
-                disabled
-                style={{
-                  width: '100%',
-                  padding: '10px 14px',
-                  borderRadius: 10,
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  color: 'rgba(255, 255, 255, 0.35)',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: 'not-allowed',
-                  marginTop: 8,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justify: 'center',
-                  gap: 2,
-                  fontFamily: 'inherit',
-                  pointerEvents: 'none',
-                }}
-              >
-                <span>Payer en ligne</span>
-                <span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(255, 255, 255, 0.25)', letterSpacing: '0.4px' }}>
-                  (Bientôt disponible / Coming soon)
-                </span>
-              </button>
+              {user && (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255,255, 0.08)',
+                      color: 'rgba(255, 255, 255, 0.35)',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: 'not-allowed',
+                      marginTop: 8,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justify: 'center',
+                      gap: 2,
+                      fontFamily: 'inherit',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <span>Payer en ligne</span>
+                    <span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(255, 255, 255, 0.25)', letterSpacing: '0.4px' }}>
+                      (Bientôt disponible / Coming soon)
+                    </span>
+                  </button>
 
-              <div className="vd-panel__secure"><FiShield size={13}/> Paiement sécurisé</div>
+                  <div className="vd-panel__secure"><FiShield size={13}/> Paiement sécurisé</div>
 
-              <div className="vd-panel__logos">
-                <div className="vd-logo vd-logo--visa">VISA</div>
-                <div className="vd-logo vd-logo--mc"><span className="vd-logo__mc-circle vd-logo__mc-circle--red"/><span className="vd-logo__mc-circle vd-logo__mc-circle--orange"/></div>
-                <div className="vd-logo vd-logo--amex">AMEX</div>
-                <div className="vd-logo vd-logo--apple">🍎 Pay</div>
-              </div>
+                  <div className="vd-panel__logos">
+                    <div className="vd-logo vd-logo--visa">VISA</div>
+                    <div className="vd-logo vd-logo--mc"><span className="vd-logo__mc-circle vd-logo__mc-circle--red"/><span className="vd-logo__mc-circle vd-logo__mc-circle--orange"/></div>
+                    <div className="vd-logo vd-logo--amex">AMEX</div>
+                    <div className="vd-logo vd-logo--apple">🍎 Pay</div>
+                  </div>
+                </>
+              )}
 
               {!user && (
-                <p style={{ fontSize:11.5, color:'#9ca3af', textAlign:'center', marginTop:8 }}>
+                <p className="vd-optional-account">
+                  Vous avez déjà un compte ?{' '}
                   <button
-                    style={{ background:'none', border:'none', color:'#1e3a8a', cursor:'pointer', fontSize:'inherit', textDecoration:'underline', fontFamily:'inherit' }}
                     onClick={() => openAuthModal('login')}
                   >
                     Connectez-vous
                   </button>
                   {' '}ou{' '}
                   <button
-                    style={{ background:'none', border:'none', color:'#1e3a8a', cursor:'pointer', fontSize:'inherit', textDecoration:'underline', fontFamily:'inherit' }}
                     onClick={() => openAuthModal('register')}
                   >
-                    créez un compte
+                    créez-en un
                   </button>
-                  {' '}pour réserver.
+                  {' '}pour retrouver plus facilement vos réservations. C'est facultatif.
                 </p>
               )}
             </div>

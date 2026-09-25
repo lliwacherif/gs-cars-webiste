@@ -24,14 +24,31 @@ export enum PaymentStatus {
   REFUNDED = 'refunded',
 }
 
+@Schema({ _id: false })
+export class GuestContact {
+  @Prop({ required: true, trim: true })
+  fullName: string;
+
+  @Prop({ trim: true, lowercase: true })
+  email?: string;
+
+  @Prop({ required: true, trim: true })
+  phone: string;
+}
+
+export const GuestContactSchema = SchemaFactory.createForClass(GuestContact);
+
 @Schema({ timestamps: true })
 export class Reservation {
   // ── Parties ───────────────────────────────────────────────────────────────
   @Prop({ type: Types.ObjectId, ref: 'Vehicle', required: true })
   vehicle: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  user: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User', default: null })
+  user?: Types.ObjectId | null;
+
+  @Prop({ type: GuestContactSchema, default: null })
+  guestContact?: GuestContact | null;
 
   // ── Logistics ─────────────────────────────────────────────────────────────
   @Prop({ required: true, trim: true })
@@ -137,6 +154,7 @@ export class Reservation {
 export const ReservationSchema = SchemaFactory.createForClass(Reservation);
 
 ReservationSchema.index({ user: 1, status: 1 });
+ReservationSchema.index({ 'guestContact.email': 1, createdAt: -1 });
 ReservationSchema.index({ vehicle: 1, pickupDate: 1, dropoffDate: 1 });
 ReservationSchema.index({ status: 1, pickupDate: 1 });
 ReservationSchema.index({ createdAt: -1 });

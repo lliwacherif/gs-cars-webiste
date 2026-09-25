@@ -226,6 +226,24 @@ function fmtMoney(n) {
   return Number(n).toLocaleString('fr-FR', { minimumFractionDigits: 0 }) + ' TND'
 }
 
+function reservationCustomer(reservation) {
+  if (reservation?.user && typeof reservation.user === 'object') {
+    return { ...reservation.user, isGuest: false }
+  }
+  if (reservation?.guestContact) {
+    const fullName = reservation.guestContact.fullName?.trim()
+    return {
+      ...reservation.guestContact,
+      firstName: fullName || reservation.guestContact.firstName || 'Visiteur',
+      lastName: fullName ? '' : reservation.guestContact.lastName || '',
+      role: 'guest',
+      isGuest: true,
+      isEmailVerified: false,
+    }
+  }
+  return { firstName: 'Client', lastName: '', email: '', phone: '', role: 'guest', isGuest: true }
+}
+
 // ════════════════════════════════════════════════════════
 // VEHICLE FORM MODAL  (Add + Edit)
 // ════════════════════════════════════════════════════════
@@ -761,8 +779,8 @@ function HistoryModal({ vehicle, onClose }) {
                 {history.map(r => (
                   <tr key={r._id} className="admin-table__row">
                     <td>
-                      <div className="admin-table__car-name">{r.user?.firstName} {r.user?.lastName}</div>
-                      <div className="admin-table__car-year">{r.user?.email}</div>
+                      <div className="admin-table__car-name">{reservationCustomer(r).firstName} {reservationCustomer(r).lastName}</div>
+                      <div className="admin-table__car-year">{reservationCustomer(r).email || reservationCustomer(r).phone}</div>
                     </td>
                     <td style={{ fontSize: 12, color: 'var(--white-70)' }}>{fmtDate(r.pickupDate)}</td>
                     <td style={{ fontSize: 12, color: 'var(--white-70)' }}>{fmtDate(r.dropoffDate)}</td>
@@ -811,9 +829,10 @@ function CustomerProfileCard({ user, reservation, allReservations = [], onClose 
 
     const userReservations = Array.isArray(allReservations)
       ? allReservations.filter(r => {
-          if (!r || !r.user) return false
-          const rId = String(r.user._id || r.user.id || r.user || '').toLowerCase()
-          const rEmail = String(r.user.email || '').toLowerCase()
+          if (!r) return false
+          const rCustomer = reservationCustomer(r)
+          const rId = String(rCustomer._id || rCustomer.id || '').toLowerCase()
+          const rEmail = String(rCustomer.email || '').toLowerCase()
           return (targetId && rId && rId === targetId) || (targetEmail && rEmail && rEmail === targetEmail)
         })
       : []
@@ -878,7 +897,7 @@ function CustomerProfileCard({ user, reservation, allReservations = [], onClose 
                 {u.firstName || 'Client'} {u.lastName || ''}
               </div>
               <div style={{ fontSize: 12, color: 'var(--white-50)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span>{u.role === 'admin' ? '👑 Admin' : '👤 Client'}</span>
+                <span>{u.role === 'admin' ? '👑 Admin' : u.isGuest ? '👤 Visiteur' : '👤 Client'}</span>
                 <span>•</span>
                 <span>{u.age ? `${u.age} ans` : 'Âge non renseigné'}</span>
               </div>
@@ -890,7 +909,7 @@ function CustomerProfileCard({ user, reservation, allReservations = [], onClose 
               border: `1px solid ${u.isEmailVerified ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)'}`,
               fontWeight: 700
             }}>
-              {u.isEmailVerified ? '✓ Email vérifié' : '✉️ Email non vérifié'}
+              {u.isGuest ? 'Réservation visiteur' : u.isEmailVerified ? '✓ Email vérifié' : '✉️ Email non vérifié'}
             </div>
           </div>
 
@@ -996,7 +1015,7 @@ function CustomerProfileCard({ user, reservation, allReservations = [], onClose 
 // RESERVATION STATUS MODAL - Complete rewrite with payment management
 // ════════════════════════════════════════════════════════
 function StatusModal({ reservation, allReservations = [], onClose, onSaved, onRequestDelete }) {
-  if (!reservation) return null
+  const customer = reservationCustomer(reservation)
 
   const [activeTab, setActiveTab] = useState('status')  // status | payment | details
   const [showClientProfile, setShowClientProfile] = useState(false)
@@ -1097,7 +1116,7 @@ function StatusModal({ reservation, allReservations = [], onClose, onSaved, onRe
           <div className="vm-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <h2 className="vm-title">Gérer la réservation</h2>
-              {reservation.user && (
+              {customer && (
                 <button
                   type="button"
                   onClick={() => setShowClientProfile(!showClientProfile)}
@@ -1136,7 +1155,7 @@ function StatusModal({ reservation, allReservations = [], onClose, onSaved, onRe
             )}
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--white)', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span>{reservation.user?.firstName} {reservation.user?.lastName} · {reservation.vehicle?.name}</span>
+                <span>{customer.firstName} {customer.lastName} · {reservation.vehicle?.name}</span>
                 <span style={{
                   fontSize: 12,
                   fontWeight: 800,
@@ -1397,7 +1416,7 @@ function StatusModal({ reservation, allReservations = [], onClose, onSaved, onRe
       {/* GREEN BOX: Client Profile Side Card (Slides right along animation path) */}
       {showClientProfile && (
         <CustomerProfileCard
-          user={reservation.user}
+          user={customer}
           reservation={reservation}
           allReservations={allReservations}
           onClose={() => setShowClientProfile(false)}
@@ -1489,7 +1508,8 @@ function ParcModal({ parc, onClose, onSaved }) {
 function ConfirmDeleteReservationModal({ reservation, deleting, onCancel, onConfirm }) {
   if (!reservation) return null
   const code = `#GSC-${reservation._id?.slice(-6).toUpperCase()}`
-  const client = [reservation.user?.firstName, reservation.user?.lastName].filter(Boolean).join(' ') || '—'
+  const customer = reservationCustomer(reservation)
+  const client = [customer.firstName, customer.lastName].filter(Boolean).join(' ') || '—'
   const vehicle = reservation.vehicle?.name || '—'
 
   return (
@@ -1563,13 +1583,15 @@ export default function Admin() {
   const filteredReservations = allReservations.filter(r => {
     if (!resSearchQuery.trim()) return true
     const q = resSearchQuery.toLowerCase().trim()
-    const resCode = `#tcr-${r._id?.slice(-6)}`.toLowerCase()
+    const resCode = `#gsc-${r._id?.slice(-6)}`.toLowerCase()
     const fullId = String(r._id || '').toLowerCase()
-    const clientName = `${r.user?.firstName || ''} ${r.user?.lastName || ''}`.toLowerCase()
-    const clientEmail = String(r.user?.email || '').toLowerCase()
+    const customer = reservationCustomer(r)
+    const clientName = `${customer.firstName || ''} ${customer.lastName || ''}`.toLowerCase()
+    const clientEmail = String(customer.email || '').toLowerCase()
+    const clientPhone = String(customer.phone || '').toLowerCase()
     const carName = String(r.vehicle?.name || '').toLowerCase()
     const carPlate = String(r.vehicle?.plate || '').toLowerCase()
-    return resCode.includes(q) || fullId.includes(q) || clientName.includes(q) || clientEmail.includes(q) || carName.includes(q) || carPlate.includes(q)
+    return resCode.includes(q) || fullId.includes(q) || clientName.includes(q) || clientEmail.includes(q) || clientPhone.includes(q) || carName.includes(q) || carPlate.includes(q)
   })
 
   // ── Calendar-specific state (separate from main data) ──
@@ -1940,8 +1962,8 @@ export default function Admin() {
                     {(stats?.recentActivity || []).slice(0, 8).map(r => (
                       <tr key={r._id} className="admin-table__row">
                         <td>
-                          <div className="admin-table__car-name">{r.user?.firstName} {r.user?.lastName}</div>
-                          <div className="admin-table__car-year">{r.user?.email}</div>
+                          <div className="admin-table__car-name">{reservationCustomer(r).firstName} {reservationCustomer(r).lastName}</div>
+                          <div className="admin-table__car-year">{reservationCustomer(r).email || reservationCustomer(r).phone}</div>
                         </td>
                         <td className="admin-table__car-name">{r.vehicle?.name || '—'}</td>
                         <td style={{ fontSize: 11.5, color: 'var(--white-50)' }}>
@@ -1980,7 +2002,7 @@ export default function Admin() {
                           </div>
                           <div className="res-item__info">
                             <div className="res-item__top">
-                              <span className="res-item__client">{r.user?.firstName} {r.user?.lastName}</span>
+                              <span className="res-item__client">{reservationCustomer(r).firstName} {reservationCustomer(r).lastName}</span>
                               <ResBadge status={r.status}/>
                             </div>
                             <span className="res-item__car">{r.vehicle?.name}</span>
@@ -2319,8 +2341,8 @@ export default function Admin() {
                           </div>
                         </td>
                         <td>
-                          <div className="admin-table__car-name">{r.user?.firstName} {r.user?.lastName}</div>
-                          <div className="admin-table__car-year">{r.user?.email}</div>
+                          <div className="admin-table__car-name">{reservationCustomer(r).firstName} {reservationCustomer(r).lastName}</div>
+                          <div className="admin-table__car-year">{reservationCustomer(r).email || reservationCustomer(r).phone}</div>
                         </td>
                         <td>
                           <div className="admin-table__car-name">{r.vehicle?.name || '—'}</div>
@@ -2467,8 +2489,8 @@ export default function Admin() {
                       const { state, res } = dayStatus(v, calData.reservations, d.date)
                       const COLOR = {
                         ok:          { bg: 'transparent',            dot: '#4ade80', title: 'Disponible' },
-                        pending:     { bg: 'rgba(249,115,22,0.09)',  dot: '#f97316', title: `En attente — ${res?.user?.firstName ?? ''} ${res?.user?.lastName ?? ''}`.trim() || 'En attente' },
-                        booked:      { bg: 'rgba(248,113,113,0.09)', dot: '#f87171', title: `Loué — ${res?.user?.firstName ?? ''} ${res?.user?.lastName ?? ''}`.trim() || 'Loué' },
+                        pending:     { bg: 'rgba(249,115,22,0.09)',  dot: '#f97316', title: `En attente — ${reservationCustomer(res).firstName} ${reservationCustomer(res).lastName}`.trim() },
+                        booked:      { bg: 'rgba(248,113,113,0.09)', dot: '#f87171', title: `Loué — ${reservationCustomer(res).firstName} ${reservationCustomer(res).lastName}`.trim() },
                         maintenance: { bg: 'rgba(107,114,128,0.07)', dot: '#6b7280', title: v.status || 'Maintenance' },
                       }
                       const c = COLOR[state]
@@ -2541,7 +2563,7 @@ export default function Admin() {
                           </div>
                           <div className="res-item__info">
                             <div className="res-item__top">
-                              <span className="res-item__client">{r.user?.firstName} {r.user?.lastName}</span>
+                              <span className="res-item__client">{reservationCustomer(r).firstName} {reservationCustomer(r).lastName}</span>
                               <ResBadge status={r.status}/>
                             </div>
                             <span className="res-item__car">{r.vehicle?.name}</span>
