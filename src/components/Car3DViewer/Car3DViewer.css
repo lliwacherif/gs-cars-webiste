@@ -1,0 +1,175 @@
+.car-3d-wrapper {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  background: radial-gradient(circle at center, #1f293d 0%, #0f172a 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.car-3d-wrapper--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  border-radius: 0;
+}
+
+.car-3d-canvas {
+  width: 100%;
+  height: 100%;
+  --poster-color: transparent;
+  outline: none;
+  cursor: grab;
+}
+
+.car-3d-canvas:active {
+  cursor: grabbing;
+}
+
+/* Loading Overlay */
+.car-3d-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f3f4f6;
+  gap: 12px;
+}
+
+.car-3d-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fbbf24;
+  border-radius: 50%;
+  animation: car3dSpin 0.9s linear infinite;
+}
+
+@keyframes car3dSpin {
+  to { transform: rotate(360deg); }
+}
+
+.car-3d-loading-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.car-3d-progress-bar {
+  width: 220px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.car-3d-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  transition: width 0.25s ease;
+}
+
+/* Hint overlay */
+.car-3d-hint {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f3f4f6;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none;
+  animation: pulseHint 2s infinite;
+}
+
+.car-3d-hint-icon {
+  color: #fbbf24;
+  font-size: 15px;
+}
+
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.5; }
+}
+
+/* Toolbar */
+.car-3d-toolbar {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 15;
+}
+
+.car-3d-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.car-3d-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: #ffffff;
+  border-color: rgba(251, 191, 36, 0.5);
+  transform: translateY(-1px);
+}
+
+.car-3d-btn--active {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+@media (max-width: 640px) {
+  .car-3d-wrapper {
+    height: 320px;
+  }
+
+  .car-3d-toolbar {
+    bottom: 12px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .car-3d-btn span {
+    display: none;
+  }
+
+  .car-3d-btn {
+    padding: 8px;
+  }
+}

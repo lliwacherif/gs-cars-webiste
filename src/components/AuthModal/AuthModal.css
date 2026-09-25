@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════════════
+   AUTH MODAL — Black & Gold theme
+═══════════════════════════════════════════════════════ */
+.am-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000; padding: 16px; animation: am-fade .2s ease;
+}
+@keyframes am-fade { from { opacity: 0 } to { opacity: 1 } }
+
+.am-card {
+  position: relative; display: grid; grid-template-columns: 1fr 1fr;
+  width: min(900px, 100%); height: min(680px, 95vh);
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.8);
+  background: var(--black-2); border: 1px solid var(--black-4);
+  animation: am-pop .28s cubic-bezier(0.34,1.36,0.64,1);
+}
+@keyframes am-pop { from { transform: scale(0.93) translateY(20px); opacity: 0 } to { transform: scale(1) translateY(0); opacity: 1 } }
+
+.am-slot { position: relative; overflow: hidden; height: 100%; transition: transform .42s cubic-bezier(0.77,0,0.175,1), opacity .42s ease; }
+.am-card--animating .am-slot--a { transform: translateX(-8px); opacity: 0.3; }
+.am-card--animating .am-slot--b { transform: translateX(8px);  opacity: 0.3; }
+
+/* Close */
+.am-close {
+  position: absolute; top: 14px; right: 14px; z-index: 10;
+  width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--black-5);
+  background: var(--black-3); color: var(--white-70);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.am-close:hover { background: var(--black-4); color: var(--white); }
+
+/* ── Form panel ── */
+.am-panel--form { background: var(--black-2); overflow-y: auto; scrollbar-width: none; }
+.am-panel--form::-webkit-scrollbar { display: none; }
+.am-panel__inner { padding: 24px 32px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; justify-content: space-between; }
+
+.am-logo { display: flex; align-items: center; margin-bottom: 12px; width: 140px; height: 52px; overflow: hidden; }
+.am-logo__img { height: 140px; width: 140px; max-width: none; object-fit: cover; object-position: center; }
+
+.am-title { font-size: 24px; font-weight: 800; color: var(--white); margin: 0 0 10px; letter-spacing: -0.5px; }
+.am-sub   { font-size: 13px; color: var(--white-50); margin: 0 0 14px; }
+
+.am-error { display: flex; align-items: center; gap: 7px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 7px 10px; font-size: 12px; color: #fca5a5; margin-bottom: 10px; }
+
+.am-form { display: flex; flex-direction: column; gap: 8px; }
+.am-row-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.am-field { display: flex; flex-direction: column; gap: 3px; }
+.am-label { font-size: 10.5px; font-weight: 600; color: var(--white-50); text-transform: uppercase; letter-spacing: 0.4px; }
+.am-optional { font-weight: 400; color: var(--white-30); }
+.am-label-row { display: flex; align-items: center; justify-content: space-between; }
+
+.am-input {
+  width: 100%; padding: 7px 10px; border: none;
+  border-bottom: 1.5px solid var(--black-5); background: transparent;
+  font-size: 13px; color: var(--white); outline: none;
+  transition: border-color .15s; font-family: inherit; box-sizing: border-box;
+}
+.am-input:focus { border-bottom-color: var(--gold); }
+.am-input::placeholder { color: var(--white-30); font-size: 12.5px; }
+
+.am-pw-wrap { position: relative; display: flex; align-items: center; }
+.am-pw-wrap .am-input { padding-right: 36px; }
+.am-eye { position: absolute; right: 0; background: none; border: none; color: var(--white-30); cursor: pointer; display: flex; align-items: center; padding: 4px 6px; }
+.am-eye:hover { color: var(--white-70); }
+
+.am-forgot { font-size: 11.5px; color: var(--white-50); text-decoration: none; }
+.am-forgot:hover { color: var(--gold); text-decoration: underline; }
+
+.am-check { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--white-50); cursor: pointer; margin-top: 2px; }
+.am-check input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0; }
+.am-link { color: var(--gold); font-weight: 600; text-decoration: underline; }
+
+.am-submit {
+  width: 100%; padding: 10px; background: var(--gold); color: var(--black);
+  border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800;
+  cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center;
+  min-height: 40px; margin-top: 4px; letter-spacing: 0.3px; transition: background .15s, transform .1s;
+}
+.am-submit:hover:not(:disabled) { background: var(--gold-light); }
+.am-submit:active:not(:disabled) { transform: scale(0.98); }
+.am-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.am-spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: var(--black); border-radius: 50%; animation: am-spin .65s linear infinite; display: inline-block; }
+@keyframes am-spin { to { transform: rotate(360deg) } }
+
+.am-divider { display: flex; align-items: center; gap: 10px; margin: 8px 0 6px; font-size: 10.5px; font-weight: 700; color: var(--white-30); letter-spacing: 0.5px; }
+.am-divider::before, .am-divider::after { content: ''; flex: 1; height: 1px; background: var(--black-5); }
+
+.am-social-buttons { display: flex; flex-direction: column; gap: 6px; width: 100%; margin-bottom: 2px; }
+
+.am-social-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 8px 12px; border-radius: 8px; font-size: 12px;
+  font-weight: 600; font-family: inherit; cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease; border: 1px solid var(--black-5);
+}
+.am-social-btn:active { transform: scale(0.99); }
+
+.am-social-btn--google { background: #ffffff; color: #1f2937; border-color: #e5e7eb; }
+.am-social-btn--google:hover { background: #f9fafb; }
+
+.am-social-btn--facebook { background: #1877F2; color: #ffffff; border-color: #1877F2; }
+.am-social-btn--facebook:hover { background: #166fe5; }
+
+.am-switch-text { text-align: center; font-size: 12px; color: var(--white-50); margin: 0; padding-top: 4px; }
+.am-switch-btn { background: none; border: none; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.am-switch-btn:hover { color: var(--gold-light); }
+
+/* ── Image panel ── */
+.am-panel--image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  margin: 8px;
+  height: calc(100% - 16px);
+  min-height: 0;
+}
+.am-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.9;
+  display: block;
+}
+.am-image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.15) 100%); }
+.am-image-content { position: absolute; bottom: 36px; left: 28px; right: 28px; z-index: 2; }
+.am-image-tagline { font-size: 26px; font-weight: 800; color: var(--white); line-height: 1.15; margin: 0; letter-spacing: -0.5px; }
+.am-image-tagline--accent { color: var(--gold); }
+.am-image-desc { margin: 10px 0 0; font-size: 15px; color: rgba(255,255,255,0.82); line-height: 1.6; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .am-overlay { padding: 12px; align-items: center; }
+  .am-card { grid-template-columns: 1fr; height: auto; max-height: calc(100vh - 24px); overflow-y: auto; width: min(440px, 100%); }
+  .am-panel--image { display: none; }
+}
+
+@media (max-width: 640px) {
+  .am-overlay { padding: 8px; align-items: flex-end; }
+  .am-card { grid-template-columns: 1fr; height: auto; max-height: 96vh; overflow-y: auto; width: 100%; border-radius: 16px 16px 0 0; }
+  .am-panel--image { display: none; }
+  .am-panel__inner { padding: 24px 18px 20px; }
+  .am-row-two { grid-template-columns: 1fr; }
+  .am-title { font-size: 20px; }
+  .am-close { top: 10px; right: 10px; }
+}

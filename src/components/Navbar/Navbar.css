@@ -1,0 +1,181 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--black-2);
+  border-bottom: 1px solid var(--black-4);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.6);
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+}
+
+/* Logo */
+.navbar__logo {
+  display: flex; align-items: center; justify-content: center;
+  width: 128px; height: 48px; overflow: hidden; flex-shrink: 0; text-decoration: none;
+}
+.navbar__logo-img {
+  height: 128px; width: 128px; max-width: none;
+  object-fit: cover; object-position: center;
+}
+/* We override stroke via currentColor in the JSX component. ── */
+
+/* Nav */
+.navbar__nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+.navbar__link {
+  font-size: 13px; font-weight: 500; color: var(--white-70);
+  padding: 8px 11px; border-radius: var(--radius); transition: color .2s, background .2s;
+  text-decoration: none; white-space: nowrap; position: relative;
+}
+.navbar__link:hover { color: var(--white); background: var(--white-06); }
+.navbar__link--active { color: var(--gold); font-weight: 600; }
+.navbar__link--active::after {
+  content: ''; position: absolute; bottom: -2px; left: 11px; right: 11px;
+  height: 2px; background: var(--gold); border-radius: 2px;
+}
+
+/* Actions */
+.navbar__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.navbar__lang {
+  display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 500;
+  color: var(--white-70); padding: 6px 10px; border-radius: var(--radius);
+  transition: background .2s, color .2s; cursor: pointer; background: none;
+  border: 1px solid var(--black-5); font-family: inherit;
+}
+.navbar__lang:hover { background: var(--white-06); color: var(--white); }
+
+.navbar__user {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1.5px solid var(--black-5); color: var(--white-70);
+  transition: all .2s; cursor: pointer; background: none;
+}
+.navbar__user:hover { border-color: var(--gold); color: var(--gold); }
+.navbar__login-btn { flex-shrink: 0; }
+
+.navbar__phone {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--gold); color: var(--black);
+  font-size: 13px; font-weight: 700; padding: 8px 14px;
+  border-radius: var(--radius); text-decoration: none; transition: background .2s; white-space: nowrap;
+}
+.navbar__phone:hover { background: var(--gold-light); }
+
+/* Hamburger */
+.navbar__hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--white-70); margin-left: auto; }
+
+/* Mobile menu */
+.navbar__mobile {
+  display: flex; flex-direction: column;
+  background: var(--black-2); border-top: 1px solid var(--black-4); padding: 12px 24px 20px; gap: 4px;
+}
+.navbar__mobile-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0 14px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--black-4);
+}
+.navbar__mobile-tools .currency-toggle { align-self: flex-start; }
+.navbar__mobile-langs {
+  display: flex;
+  gap: 8px;
+}
+.navbar__mobile-lang {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--black-5);
+  background: var(--black-3);
+  color: var(--white-70);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.navbar__mobile-lang--active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+.navbar__mobile-link {
+  font-size: 15px; font-weight: 500; color: var(--white-70);
+  padding: 10px 0; border-bottom: 1px solid var(--black-4); text-decoration: none;
+}
+.navbar__mobile-link--btn {
+  background: none;
+  border: none;
+  text-align: start;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navbar__mobile-link--active { color: var(--gold); font-weight: 700; }
+.navbar__mobile-phone {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 600; color: var(--gold); padding: 12px 0 0; text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .navbar__nav { display: none; }
+  .navbar__actions { display: none; }
+  .navbar__hamburger { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; flex-shrink: 0; }
+  .navbar__inner { gap: 12px; }
+  .navbar__logo { width: 108px; height: 42px; }
+  .navbar__logo-img { height: 108px; width: 108px; }
+}
+
+@media (max-width: 768px) {
+  .navbar__inner { height: 58px; }
+  .navbar__mobile {
+    padding: 12px 16px 24px;
+    max-height: calc(100vh - 58px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__inner { height: 56px; gap: 8px; }
+  .navbar__logo { width: 88px; height: 36px; }
+  .navbar__logo-img { width: 88px; height: 88px; }
+  .navbar__login-btn, .navbar__hamburger { width: 40px; height: 40px; }
+}
+
+/* User menu */
+.navbar__user-menu { display: flex; align-items: center; gap: 6px; }
+.navbar__user-name { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--gold); }
+.navbar__user--logout { color: var(--white-50); transition: color .15s; border: 1.5px solid var(--black-5); }
+.navbar__user--logout:hover { color: var(--danger); border-color: var(--danger); }
+
+/* Admin strip */
+.navbar__admin-strip {
+  background: var(--gold); color: var(--black);
+  font-size: 12px; font-weight: 600; padding: 6px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.navbar__admin-strip-link {
+  display: flex; align-items: center; gap: 5px; color: var(--black);
+  text-decoration: none; font-weight: 700; font-size: 12px; transition: opacity .15s;
+}
+.navbar__admin-strip-link:hover { opacity: 0.75; }
+
+/* Admin badge */
+.navbar__admin-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--gold); color: var(--black);
+  font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 20px;
+  text-decoration: none; transition: background .15s; letter-spacing: 0.2px;
+}
+.navbar__admin-badge:hover { background: var(--gold-light); }

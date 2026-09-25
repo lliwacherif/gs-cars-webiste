@@ -1,0 +1,399 @@
+/* ── Enhanced Guide Page Styles ─────────────────────────────────────────── */
+
+.guide-page {
+  min-height: 100vh;
+  background-color: var(--black);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.guide-container {
+  padding-top: 36px;
+  padding-bottom: 70px;
+  flex: 1;
+}
+
+/* Hero Banner */
+.guide-hero-banner {
+  text-align: center;
+  margin-bottom: 64px;
+  animation: guideFadeUp 0.6s ease forwards;
+}
+
+.guide-hero-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gold);
+  background: rgba(212, 160, 23, 0.12);
+  border: 1px solid rgba(212, 160, 23, 0.35);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.guide-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.guide-title--gold {
+  color: var(--gold);
+  background: linear-gradient(135deg, #f59e0b 0%, #d4a017 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.guide-subtitle {
+  font-size: 14.5px;
+  color: var(--white-60);
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Step-by-step Timeline (Spaced out vertically) */
+.guide-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 80px; /* Increased vertical spacing */
+  margin-bottom: 80px;
+  position: relative;
+}
+
+.guide-timeline-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+}
+
+@media (max-width: 850px) {
+  .guide-container { padding-top: 24px; padding-bottom: 40px; }
+  .guide-hero-banner { margin-bottom: 36px; }
+  .guide-title { font-size: 22px; line-height: 1.25; overflow-wrap: break-word; }
+  .guide-timeline-container { gap: 40px; margin-bottom: 48px; }
+  .guide-timeline-row,
+  .guide-timeline-row--reverse {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 850px) {
+  .guide-timeline-row--reverse .guide-timeline-img-card,
+  .guide-timeline-row--reverse .guide-timeline-text-card {
+    order: unset;
+  }
+}
+
+.guide-timeline-row--reverse {
+  grid-template-columns: 1fr 1fr;
+}
+
+.guide-timeline-row--reverse .guide-timeline-img-card {
+  order: 2;
+}
+
+.guide-timeline-row--reverse .guide-timeline-text-card {
+  order: 1;
+}
+
+@media (max-width: 850px) {
+  .guide-timeline-row--reverse {
+    grid-template-columns: 1fr;
+  }
+  .guide-timeline-row--reverse .guide-timeline-img-card,
+  .guide-timeline-row--reverse .guide-timeline-text-card {
+    order: unset;
+  }
+}
+
+/* ── SCROLL SIDE SLIDE ANIMATIONS ── */
+
+/* Image Card: initial state (slid out) */
+.guide-timeline-row .guide-timeline-img-card {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Text Card: initial state (slid out) */
+.guide-timeline-row .guide-timeline-text-card {
+  opacity: 0;
+  transform: translateX(80px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reverse row: reverse initial slide directions */
+.guide-timeline-row--reverse .guide-timeline-img-card {
+  transform: translateX(80px);
+}
+
+.guide-timeline-row--reverse .guide-timeline-text-card {
+  transform: translateX(-80px);
+}
+
+/* VISIBLE STATE (Triggered by IntersectionObserver as user scrolls) */
+.guide-timeline-row.guide-row-visible .guide-timeline-img-card,
+.guide-timeline-row.guide-row-visible .guide-timeline-text-card {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Image Card Styling */
+.guide-timeline-img-card {
+  width: 100%;
+  height: 310px; /* Taller image card */
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  border: 1.5px solid var(--black-4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.guide-timeline-img-card:hover {
+  border-color: rgba(212, 160, 23, 0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(212, 160, 23, 0.15);
+}
+
+.guide-timeline-img-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-timeline-img-card:hover img {
+  transform: scale(1.05);
+}
+
+.guide-img-overlay {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
+
+.guide-step-tag {
+  background: rgba(13, 13, 15, 0.85);
+  backdrop-filter: blur(8px);
+  color: var(--gold);
+  border: 1px solid rgba(212, 160, 23, 0.4);
+  font-size: 16px;
+  font-weight: 900;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+/* Text Card Styling */
+.guide-timeline-text-card {
+  background: var(--black-2);
+  border: 1px solid var(--black-4);
+  border-radius: 16px;
+  padding: 32px 36px; /* Spaced out padding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.guide-timeline-head {
+  margin-bottom: 14px;
+}
+
+.guide-badge-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.4px;
+}
+
+.guide-timeline-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 12px;
+  line-height: 1.35;
+}
+
+.guide-timeline-desc {
+  font-size: 14px;
+  color: var(--white-70);
+  line-height: 1.7;
+}
+
+/* Sections */
+.guide-section {
+  background: var(--black-2);
+  border: 1px solid var(--black-4);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.guide-section-head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.guide-section-head h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.guide-section-head p {
+  font-size: 13px;
+  color: var(--white-50);
+}
+
+/* Status Cards Grid */
+.guide-status-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .guide-status-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .guide-status-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.guide-status-box {
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guide-status-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.guide-status-badge {
+  font-size: 14.5px;
+  font-weight: 800;
+}
+
+.guide-status-sub {
+  font-size: 12.5px;
+  color: var(--white-70);
+  line-height: 1.5;
+}
+
+/* Accordion FAQ */
+.guide-faq-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide-faq-item {
+  background: var(--black-3);
+  border: 1px solid var(--black-5);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.guide-faq-item:hover,
+.guide-faq-item--open {
+  border-color: rgba(212, 160, 23, 0.4);
+  background: rgba(22, 22, 26, 0.95);
+}
+
+.guide-faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.guide-faq-answer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--black-5);
+  font-size: 13px;
+  color: var(--white-70);
+  line-height: 1.6;
+  animation: guideFadeUp 0.3s ease forwards;
+}
+
+/* CTA Card */
+.guide-cta-card {
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.15) 0%, var(--black-2) 100%);
+  border: 1.5px solid rgba(212, 160, 23, 0.45);
+  border-radius: 16px;
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 700px) {
+  .guide-cta-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 18px;
+  }
+  .guide-cta-btn { width: 100%; justify-content: center; }
+}
+
+.guide-cta-content h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.guide-cta-content p {
+  font-size: 13.5px;
+  color: var(--white-70);
+}
+
+.guide-cta-btn {
+  background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+  color: #0d0d0f;
+  font-weight: 800;
+  font-size: 14.5px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.guide-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 160, 23, 0.4);
+}
+
+@keyframes guideFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
