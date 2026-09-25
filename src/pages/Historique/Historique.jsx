@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import { reservationsService } from '../../services/vehiclesService'
+import { mediaUrl } from '../../mediaUrl'
 import Navbar from '../../components/Navbar/Navbar'
 import AdminStrip from '../../components/AdminStrip/AdminStrip'
 import Footer from '../../components/Footer/Footer'
@@ -50,7 +51,7 @@ function ReservationCard({ r }) {
       <div className="hist-card__header">
         <div className="hist-card__car-img">
           {r.vehicle?.images?.[0]
-            ? <img src={r.vehicle.images[0]} alt={r.vehicle.name} />
+            ? <img src={mediaUrl(r.vehicle.images[0])} alt={r.vehicle.name} />
             : <span className="hist-card__car-emoji">🚗</span>
           }
         </div>

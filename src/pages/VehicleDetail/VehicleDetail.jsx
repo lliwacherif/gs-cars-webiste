@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { FiHeart, FiMapPin, FiCalendar, FiUser, FiCheck, FiChevronLeft, FiChevronRight, FiShield, FiInfo, FiChevronUp, FiChevronDown, FiAlertCircle } from 'react-icons/fi'
 import { vehiclesService, reservationsService, holdsService, parcsService } from '../../services/vehiclesService'
+import { mediaUrl } from '../../mediaUrl'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
@@ -153,7 +154,7 @@ export default function VehicleDetail() {
   ]
 
   const toPay = parseFloat(paymentOptions[paymentOption].amount)
-  const images = car.images?.length > 0 ? car.images : ['/car_renault_clio_gray.png']
+  const images = car.images?.length > 0 ? car.images.map(mediaUrl) : ['/car_renault_clio_gray.png']
 
   const handleReserve = async () => {
     if (!booking.pickupDate || !booking.dropoffDate) {

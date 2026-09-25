@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FiMapPin, FiCalendar, FiUser, FiHeart, FiChevronDown, FiCheck, FiInfo, FiShield, FiAlertCircle, FiSliders } from 'react-icons/fi'
 import { vehiclesService, parcsService } from '../../services/vehiclesService'
+import { mediaUrl } from '../../mediaUrl'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
@@ -44,7 +45,7 @@ function CarCard({ car, searchParams, index }) {
     <article className="sr-card" style={{ '--card-index': index }}>
       <div className="sr-card__img-wrap">
         {car.images?.[0]
-          ? <img src={car.images[0]} alt={car.name} className="sr-card__img" loading="lazy" />
+          ? <img src={mediaUrl(car.images[0])} alt={car.name} className="sr-card__img" loading="lazy" />
           : <div className="sr-card__img-placeholder">🚗</div>
         }
       </div>

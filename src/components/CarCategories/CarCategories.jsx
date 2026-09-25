@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FiArrowRight, FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { vehiclesService } from '../../services/vehiclesService'
+import { mediaUrl } from '../../mediaUrl'
 import { useLanguage } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import './CarCategories.css'
@@ -52,7 +53,7 @@ export default function CarCategories() {
                   <Link to={`/voitures/${car._id}`} className="categories__card-link" aria-label={car.name}>
                   <div className="categories__card-img-wrap">
                     {car.images?.[0]
-                      ? <img src={car.images[0]} alt={car.name} className="categories__card-img" loading="lazy" />
+                      ? <img src={mediaUrl(car.images[0])} alt={car.name} className="categories__card-img" loading="lazy" />
                       : <span style={{ fontSize: 40 }}>🚗</span>
                     }
                   </div>
