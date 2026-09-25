@@ -48,6 +48,9 @@
 
 .footer__bottom { border-top: 1px solid var(--black-4); padding: 16px 0; }
 .footer__copyright { font-size: 12px; color: var(--white-30); text-align: center; }
+.footer__credit { margin-top: 6px; font-size: 12px; text-align: center; }
+.footer__credit a { color: var(--gold); text-decoration: none; }
+.footer__credit a:hover { text-decoration: underline; }
 
 @media (max-width: 1024px) { .footer__top { grid-template-columns: repeat(3, 1fr); gap: 32px; } .footer__col--brand { grid-column: 1 / -1; } }
 @media (max-width: 640px)  {

@@ -1,9 +1,8 @@
 import {
-  Controller, Post, Delete, Param, Req,
+  Controller, Post, Delete, Param,
   UploadedFile, UseGuards, UseInterceptors,
   BadRequestException, Body,
 } from '@nestjs/common';
-import type { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import {
@@ -94,12 +93,10 @@ export class UploadController {
   @ApiResponse({ status: 403, description: 'Forbidden — admin role required' })
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
-    @Body('folder') folder: string | undefined,
-    @Req() req: Request,
+    @Body('folder') folder?: string,
   ) {
     if (!file) throw new BadRequestException('No file provided');
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const result = await this.uploadService.uploadImage(file, folder, baseUrl);
+    const result = await this.uploadService.uploadImage(file, folder);
     return {
       url: result.secure_url,
       publicId: result.public_id,

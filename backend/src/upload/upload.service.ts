@@ -27,9 +27,8 @@ export class UploadService {
   async uploadImage(
     file: Express.Multer.File,
     folder = 'tunisia-car-rental',
-    baseUrl = 'http://localhost:3000',
   ): Promise<UploadApiResponse> {
-    if (!this.cloudinaryReady) return this.saveLocalImage(file, baseUrl);
+    if (!this.cloudinaryReady) return this.saveLocalImage(file);
 
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -62,7 +61,7 @@ export class UploadService {
     throw new Error('3D model upload is disabled');
   }
 
-  private async saveLocalImage(file: Express.Multer.File, baseUrl: string): Promise<UploadApiResponse> {
+  private async saveLocalImage(file: Express.Multer.File): Promise<UploadApiResponse> {
     await mkdir(UPLOAD_DIR, { recursive: true });
     const rawExt = extname(file.originalname || '').toLowerCase();
     const ext = IMAGE_EXTS.has(rawExt) ? rawExt : '.jpg';
@@ -70,7 +69,7 @@ export class UploadService {
     await writeFile(join(UPLOAD_DIR, filename), file.buffer);
 
     return {
-      secure_url: `${baseUrl.replace(/\/$/, '')}/uploads/${filename}`,
+      secure_url: `/uploads/${filename}`,
       public_id: filename,
       width: 0,
       height: 0,

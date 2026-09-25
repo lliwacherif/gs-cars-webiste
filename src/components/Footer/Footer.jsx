@@ -113,6 +113,9 @@ export default function Footer() {
       <div className="footer__bottom">
         <div className="container">
           <p className="footer__copyright">© {YEAR} {BRAND_NAME}. {t('footer.copyright', 'Tous droits réservés.')}</p>
+          <p className="footer__credit">
+            <a href="https://www.automedon.tn/" target="_blank" rel="noreferrer">Automedon platforms technologies</a>
+          </p>
         </div>
       </div>
     </footer>

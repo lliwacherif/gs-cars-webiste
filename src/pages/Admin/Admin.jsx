@@ -384,7 +384,7 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
       }
       // Strip MongoDB metadata and auto-managed fields — DTO will reject them
       // eslint-disable-next-line no-unused-vars
-      const { _id, __v, createdAt, updatedAt, status, isActive, ...cleanPayload } = payload
+      const { _id, __v, createdAt, updatedAt, status, isActive, parc, parcs, id, ...cleanPayload } = payload
 
       if (vehicle) await vehiclesService.update(vehicle._id, cleanPayload)
       else         await vehiclesService.create(cleanPayload)
