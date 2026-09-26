@@ -5,7 +5,7 @@
   display: flex; align-items: center; justify-content: center;
   width: 160px; height: 64px; overflow: hidden; text-decoration: none; margin-bottom: 14px;
 }
-.footer__logo-img { height: 160px; width: 160px; max-width: none; object-fit: cover; object-position: center; }
+.footer__logo-img { height: 160px; width: 160px; max-width: none; object-fit: cover; object-position: center; mix-blend-mode: lighten; }
 .footer__logo-text { display: flex; flex-direction: column; line-height: 1.1; }
 .footer__logo-title { font-size: 13px; font-weight: 800; color: var(--gold); letter-spacing: 2px; }
 .footer__logo-sub   { font-size: 7.5px; font-weight: 500; color: var(--white-30); letter-spacing: 1.5px; }

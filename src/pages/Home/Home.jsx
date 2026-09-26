@@ -6,10 +6,11 @@ import Features from '../../components/Features/Features'
 import CarCategories from '../../components/CarCategories/CarCategories'
 import PromoBanner from '../../components/PromoBanner/PromoBanner'
 import Footer from '../../components/Footer/Footer'
+import './Home.css'
 
 export default function Home() {
   return (
-    <>
+    <div className="home-page">
       <AdminStrip />
       <Navbar />
       <main>
@@ -20,6 +21,6 @@ export default function Home() {
         <PromoBanner />
       </main>
       <Footer />
-    </>
+    </div>
   )
 }

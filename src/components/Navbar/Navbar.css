@@ -21,6 +21,7 @@
 .navbar__logo-img {
   height: 128px; width: 128px; max-width: none;
   object-fit: cover; object-position: center;
+  mix-blend-mode: lighten;
 }
 /* We override stroke via currentColor in the JSX component. ── */
 

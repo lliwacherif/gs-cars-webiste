@@ -1,0 +1,116 @@
+/* Home-only lighting. Same layout and content, warmer charcoal instead of pure black. */
+.home-page {
+  --home-bg: #1c1916;
+  --home-surface: #26221d;
+  --home-raised: #302b25;
+  --home-input: #3a342c;
+  --home-line: rgba(201, 168, 76, 0.22);
+  --home-text: rgba(255, 255, 255, 0.94);
+  --home-muted: rgba(255, 255, 255, 0.74);
+  background: var(--home-bg);
+  color: var(--home-text);
+}
+
+.home-page .navbar {
+  background: #221e1a;
+  border-bottom-color: var(--home-line);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+.home-page .navbar__link { color: var(--home-muted); }
+.home-page .navbar__link:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.home-page .navbar__link--active { color: var(--gold); }
+.home-page .navbar__lang,
+.home-page .navbar__user {
+  color: var(--home-text);
+  border-color: var(--home-line);
+  background: rgba(255, 255, 255, 0.03);
+}
+.home-page .navbar__hamburger { color: var(--home-text); }
+.home-page .navbar__mobile {
+  background: #26221d;
+  border-top-color: var(--home-line);
+}
+
+.home-page .booking { background: var(--home-bg); }
+.home-page .booking__card {
+  background: var(--home-surface);
+  border-color: var(--home-line);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+.home-page .booking__tabs {
+  background: #2c2823;
+  border-bottom-color: var(--home-line);
+}
+.home-page .booking__tab { color: var(--home-muted); }
+.home-page .booking__tab:hover { color: #fff; }
+.home-page .booking__tab--active { background: var(--home-surface); color: var(--gold); }
+.home-page .booking__label,
+.home-page .booking__checkbox-label { color: var(--home-muted); }
+.home-page .booking__input,
+.home-page .booking__select,
+.home-page .parc-select__trigger {
+  background: var(--home-input);
+  border-color: rgba(232, 214, 168, 0.28);
+  color: #fff;
+}
+.home-page .booking__input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.home-page .booking__input-icon-right { color: rgba(255, 255, 255, 0.55); }
+.home-page .booking__checkbox { border-color: rgba(232, 214, 168, 0.4); }
+
+.home-page .features {
+  background: #201c18;
+  border-bottom-color: var(--home-line);
+}
+.home-page .features__item {
+  background: var(--home-surface);
+  border-color: var(--home-line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+}
+.home-page .features__desc { color: var(--home-muted); }
+
+.home-page .categories {
+  background: var(--home-bg);
+  border-bottom-color: var(--home-line);
+}
+.home-page .categories__subtitle,
+.home-page .categories__card-meta { color: var(--home-muted); }
+.home-page .categories__card {
+  background: var(--home-surface);
+  border-color: var(--home-line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+.home-page .categories__card-img-wrap { background: #342f28; }
+.home-page .categories__card-info { border-top-color: rgba(255, 255, 255, 0.08); }
+
+.home-page .promo { background: #201c18; }
+.home-page .promo__card {
+  background: var(--home-surface);
+  border-color: var(--home-line);
+}
+.home-page .promo__desc { color: var(--home-muted); }
+.home-page .promo__img { opacity: 0.88; }
+.home-page .promo__right::after {
+  background: linear-gradient(90deg, var(--home-surface) 0%, transparent 42%);
+}
+
+.home-page .footer {
+  background: #221e1a;
+  border-top-color: var(--home-line);
+}
+.home-page .footer__brand-desc,
+.home-page .footer__link,
+.home-page .footer__newsletter-desc,
+.home-page .footer__contact-item { color: var(--home-muted); }
+.home-page .footer__link:hover { color: var(--gold); }
+.home-page .footer__bottom { border-top-color: var(--home-line); }
+.home-page .footer__copyright { color: rgba(255, 255, 255, 0.62); }
+.home-page .footer__newsletter-input {
+  background: var(--home-input);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .home-page .promo__right::after {
+    background: linear-gradient(0deg, var(--home-surface) 0%, transparent 46%);
+  }
+}
