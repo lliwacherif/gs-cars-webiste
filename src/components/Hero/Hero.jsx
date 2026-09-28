@@ -9,7 +9,15 @@ export default function Hero() {
   return (
     <section className="hero" id="accueil">
       <div className="hero__bg">
-        <img src="/hero_background.png" alt="Voitures de luxe en Tunisie" className="hero__bg-img" />
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/hero-mobile.png" />
+          <img
+            src="/hero_background.png"
+            alt="Voiture premium sur la côte tunisienne"
+            className="hero__bg-img"
+            fetchPriority="high"
+          />
+        </picture>
         <div className="hero__overlay" />
       </div>
       <div className="hero__content container">

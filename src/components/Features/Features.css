@@ -22,8 +22,27 @@
   .features__item { min-height: 116px; }
 }
 @media (max-width: 500px) {
-  .features__inner { grid-template-columns: 1fr; }
-  .features__item { min-height: 0; padding: 18px; }
+  .features { padding: 18px 0 36px; overflow: hidden; }
+  .features__inner {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-right: 36px;
+    padding-bottom: 4px;
+  }
+  .features__inner::-webkit-scrollbar { display: none; }
+  .features__item {
+    flex: 0 0 min(82vw, 310px);
+    min-height: 132px;
+    padding: 20px;
+    scroll-snap-align: start;
+    border-radius: 16px;
+  }
+  .features__icon { width: 50px; height: 50px; }
+  .features__title { font-size: .98rem; }
+  .features__desc { font-size: .88rem; line-height: 1.55; }
 }
 
 @media (prefers-reduced-motion: reduce) {

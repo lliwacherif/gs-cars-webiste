@@ -74,11 +74,20 @@
 }
 
 @media (max-width: 520px) {
-  .categories { padding: 36px 0 32px; }
-  .categories__title { font-size: 22px; }
+  .categories { padding: 44px 0 38px; }
+  .categories__header { margin-bottom: 22px; }
+  .categories__eyebrow { font-size: .72rem; letter-spacing: .12rem; }
+  .categories__title { font-size: 1.75rem; letter-spacing: -.04rem; }
+  .categories__subtitle { font-size: .96rem; line-height: 1.6; }
   .categories__grid { grid-template-columns: 1fr; }
-  .categories__card-img-wrap { height: 160px; }
-  .categories__expand { width: 100%; }
+  .categories__card { border-radius: 18px; }
+  .categories__card-img-wrap { height: 190px; }
+  .categories__card-info { padding: 18px; }
+  .categories__card-name { font-size: 1.05rem; }
+  .categories__card-meta { font-size: .76rem; }
+  .categories__card-price { font-size: .9rem; }
+  .categories__expand { width: 100%; min-height: 48px; border-radius: 12px; font-size: .9rem; }
+  .categories__empty { font-size: .95rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

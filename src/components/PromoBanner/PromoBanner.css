@@ -23,15 +23,17 @@
 .promo__card:hover .promo__img { transform: scale(1.035); opacity: .82; }
 
 @media (max-width: 768px) {
-  .promo { padding: 44px 0; }
-  .promo__card { flex-direction: column; min-height: 0; }
+  .promo { padding: 46px 0 54px; }
+  .promo__card { flex-direction: column; min-height: 0; border-radius: 20px; }
   .promo__right { height: 220px; min-height: unset; }
   .promo__right::after { background: linear-gradient(0deg, var(--black-3) 0%, transparent 40%); }
   .promo__img { position: relative; width: 100%; height: 100%; }
-  .promo__left { padding: 28px 18px 24px; }
-  .promo__title { font-size: 26px; letter-spacing: -0.6px; }
-  .promo__btn { width: 100%; text-align: center; }
-  .promo__right { height: 180px; }
+  .promo__left { padding: 30px 22px 26px; }
+  .promo__eyebrow { font-size: .72rem; }
+  .promo__title { font-size: 1.85rem; letter-spacing: -.04rem; }
+  .promo__desc { font-size: 1rem; line-height: 1.6; }
+  .promo__btn { width: 100%; min-height: 50px; display: grid; place-items: center; border-radius: 12px; font-size: .94rem; }
+  .promo__right { height: 200px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

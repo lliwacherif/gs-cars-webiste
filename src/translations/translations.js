@@ -25,10 +25,10 @@ export const translations = {
     // Hero section
     hero: {
       badge: 'Votre route commence ici',
-      titleLine1: 'Louez la voiture ',
-      titleSpan: 'parfaite',
+      titleLine1: 'Votre voiture ',
+      titleSpan: 'idéale',
       titleLine2: 'en Tunisie',
-      subtitle: 'Des voitures de qualité, un service premium et des tarifs compétitifs pour tous vos trajets.',
+      subtitle: 'Des voitures fiables, des tarifs clairs et une assistance disponible 24/7.',
       primaryCta: 'Découvrir nos voitures',
       secondaryCta: 'Comment ça marche',
       trustLabel: 'Les avantages GS-Cars',
@@ -356,10 +356,10 @@ export const translations = {
     // Hero section
     hero: {
       badge: 'طريقك تبدأ من هنا',
-      titleLine1: 'استأجر السيارة ',
+      titleLine1: 'سيارتك ',
       titleSpan: 'المثالية',
       titleLine2: 'في تونس',
-      subtitle: 'سيارات عاليّة الجودة، خدمة ممتازة وأسعار تنافسية لجميع رحلاتك.',
+      subtitle: 'احجز بسهولة. سيارات موثوقة، أسعار واضحة ومساعدة متوفرة على مدار الساعة.',
       primaryCta: 'اكتشف سياراتنا',
       secondaryCta: 'كيف تتم العملية؟',
       trustLabel: 'مزايا GS-Cars',
