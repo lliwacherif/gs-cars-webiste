@@ -4,6 +4,7 @@
 
 export const translations = {
   fr: {
+    app: { loading: 'Chargement…' },
     // Navigation
     nav: {
       accueil: 'Accueil',
@@ -35,6 +36,12 @@ export const translations = {
       trustOne: 'Réservation simple',
       trustTwo: 'Tarifs transparents',
       trustThree: 'Assistance 24/7',
+      imageAlt: 'Une voiture sur la côte tunisienne, entre mer et maisons blanches aux portes bleues',
+      photoCaption: 'La Tunisie, à votre rythme',
+      postcardAlt: 'Ruelle blanche et bleue de Sidi Bou Saïd avec vue sur la Méditerranée',
+      visualNote: 'Un air de Méditerranée.',
+      postcardLabel: 'Sidi Bou Saïd',
+      destinationLabel: 'Sidi Bou Saïd, Tunisie',
     },
 
     // Features
@@ -335,6 +342,7 @@ export const translations = {
   },
 
   ar: {
+    app: { loading: 'جاري التحميل…' },
     // Navigation
     nav: {
       accueil: 'الرئيسية',
@@ -366,6 +374,12 @@ export const translations = {
       trustOne: 'حجز بسيط',
       trustTwo: 'أسعار شفافة',
       trustThree: 'مساعدة 24/7',
+      imageAlt: 'سيارة على الساحل التونسي بين البحر والمنازل البيضاء ذات الأبواب الزرقاء',
+      photoCaption: 'تونس، على إيقاعك',
+      postcardAlt: 'زقاق أبيض وأزرق في سيدي بوسعيد يطل على البحر الأبيض المتوسط',
+      visualNote: 'نسمة من المتوسط.',
+      postcardLabel: 'سيدي بوسعيد',
+      destinationLabel: 'سيدي بوسعيد، تونس',
     },
 
     // Features

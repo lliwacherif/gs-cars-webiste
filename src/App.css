@@ -1,1 +1,25 @@
 body { overflow-x: hidden; background: var(--black); }
+
+.route-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #f8f8f1;
+  color: #103a53;
+  font-size: 15px;
+}
+.route-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #dce8e0;
+  border-top-color: #066c96;
+  border-radius: 50%;
+  animation: route-loading-spin .8s linear infinite;
+}
+@keyframes route-loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .route-loading__spinner { animation: none; }
+}

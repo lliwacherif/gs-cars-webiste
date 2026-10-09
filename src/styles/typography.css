@@ -1,0 +1,158 @@
+/* Readable customer-facing typography; the admin dashboard keeps its existing layout. */
+:is(.home-page, .sr-page, .vd-page, .guide-page, .contact-page, .hist-page, .ve-page, .am-overlay, .route-loading) {
+  font-family: var(--coast-font-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+:is(.home-page, .sr-page, .vd-page, .guide-page, .contact-page, .hist-page, .ve-page, .am-overlay) :is(h1, h2, h3, h4) {
+  font-family: var(--coast-font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.025em;
+}
+
+/* Navigation stays compact enough for desktop, with comfortably sized controls. */
+.navbar:not(.admin-page .navbar) .navbar__link { font-size: 14px; font-weight: 600; padding-inline: 12px; }
+.navbar:not(.admin-page .navbar) .navbar__phone { font-size: 14px; min-height: 42px; }
+.navbar:not(.admin-page .navbar) .navbar__lang { font-size: 14px; min-height: 42px; }
+.navbar:not(.admin-page .navbar) .currency-toggle__option { font-size: 12px; padding: 7px 9px; }
+.navbar:not(.admin-page .navbar) .navbar__mobile-link { font-size: 17px; min-height: 48px; }
+.navbar:not(.admin-page .navbar) .navbar__mobile-lang { font-size: 15px; }
+.navbar:not(.admin-page .navbar) .navbar__user-name { font-size: 14px; }
+
+.home-page .hero__title { font-size: clamp(48px, 5vw, 70px); font-weight: 700; line-height: 1.12; letter-spacing: -.04em; }
+.home-page .hero__eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; }
+.home-page .hero__subtitle { max-width: 470px; font-size: 18px; line-height: 1.75; }
+.home-page .hero__cta { font-size: 15px; font-weight: 600; min-height: 52px; padding-inline: 22px; }
+.home-page .hero__trust { font-size: 13px; line-height: 1.6; gap: 12px 18px; }
+.home-page .hero__photo-caption { font-size: 13px; line-height: 1.5; }
+.home-page .hero__postcard span { font-size: 12px; }
+.home-page .hero__visual-note { font-size: 12px; }
+
+/* Booking labels and values no longer rely on tiny uppercase text. */
+.home-page .booking__tab { font-size: 15px; font-weight: 600; padding-block: 19px 17px; }
+.home-page .booking__label { font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: 0; line-height: 1.5; }
+.home-page .booking__field { min-width: 165px; }
+.home-page .booking__field--wide { min-width: 225px; }
+.home-page .booking__field--narrow { min-width: 130px; }
+/* Reserve the button's full label width before distributing space to the inputs. */
+.home-page .booking__field--btn { min-width: max-content; }
+.home-page .booking__input,
+.home-page .parc-select__trigger { height: 52px; font-size: 16px; }
+.home-page .booking__input--date { padding-inline: 12px; }
+.home-page .booking__input-icon-right { display: none; }
+.home-page .booking__search-btn { height: 52px; font-size: 16px; font-weight: 600; padding-inline: 24px; }
+.home-page .booking__checkbox-label { font-size: 14px; }
+:is(.home-page, .sr-page, .vd-page) :is(.parc-select__value, .parc-select__placeholder, .parc-select__option-name) { font-size: 15px; }
+:is(.home-page, .sr-page, .vd-page) :is(.parc-select__city, .parc-select__option-sub, .parc-select__option-badge, .parc-select__empty) { font-size: 12px; }
+
+.home-page .features__title { font-size: 16px; font-weight: 600; line-height: 1.4; margin-bottom: 7px; }
+.home-page .features__desc { font-size: 14px; line-height: 1.7; }
+.home-page .categories__title { font-size: 42px; font-weight: 700; }
+.home-page .categories__eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 1.4px; }
+.home-page .categories__subtitle { font-size: 17px; line-height: 1.7; }
+.home-page .categories__view-all,
+.home-page .categories__expand { font-size: 15px; font-weight: 600; }
+.home-page .categories__card-name { font-size: 18px; font-weight: 600; line-height: 1.4; }
+.home-page .categories__card-meta { font-size: 12px; }
+.home-page .categories__card-price { font-size: 16px; font-weight: 600; }
+.home-page .categories__empty { font-size: 16px; }
+.home-page .promo__title { font-size: clamp(34px, 3.6vw, 48px); font-weight: 700; line-height: 1.25; }
+.home-page .promo__eyebrow { font-size: 12px; font-weight: 600; }
+.home-page .promo__desc { font-size: 17px; line-height: 1.75; }
+.home-page .promo__btn { font-size: 16px; font-weight: 600; padding: 14px 26px; }
+.home-page .promo__destination { font-size: 13px; }
+
+/* The larger text scale continues through the fleet, guide and contact pages. */
+:is(.sr-page, .vd-page, .guide-page, .contact-page, .hist-page, .ve-page) :is(.sr-intro__title, .guide-title, .contact-title, .hist-hero__title) {
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+:is(.sr-page, .guide-page, .contact-page) :is(.sr-intro__subtitle, .guide-subtitle, .contact-subtitle) { font-size: 17px; line-height: 1.75; }
+.sr-page :is(.sr-intro__eyebrow, .sr-main__eyebrow, .sr-searchbar__field-label, .sr-filter-group__title, .sr-recap__label) { font-size: 12px; font-weight: 600; }
+.sr-page :is(.sr-searchbar__field-input, .sr-searchbar__btn, .sr-main__sort, .sr-main__sort-select, .sr-filter-check, .sr-recap__value, .sr-card__btn) { font-size: 15px; }
+.sr-page .sr-searchbar__field { padding-inline: 14px; }
+.sr-page .sr-card__name { font-size: 22px; font-weight: 700; }
+.sr-page :is(.sr-card__spec, .sr-card__feat, .sr-card__price-day, .sr-card__cancellation, .sr-guarantees__desc, .sr-pagination__info, .sr-card__secure) { font-size: 14px; }
+.sr-page :is(.sr-card__badge, .sr-card__price-label, .sr-card__year) { font-size: 12px; }
+.sr-page :is(.sr-filters__title, .sr-guarantees__title, .sr-empty, .sr-error) { font-size: 16px; }
+.sr-page .sr-main__count { font-size: 26px; }
+.sr-page .sr-card__price { font-size: 30px; }
+
+.vd-page .vd-title { font-size: 32px; }
+.vd-page :is(.vd-back, .vd-spec, .vd-detail-row__label, .vd-two-cols__item, .vd-panel__row, .vd-panel__detail-row, .vd-panel__car-cat, .vd-media-tab) { font-size: 15px; }
+.vd-page :is(.vd-section__title, .vd-panel__title, .vd-two-cols__title, .vd-why__item-title, .vd-panel__car-name) { font-size: 18px; }
+.vd-page :is(.vd-info-box__sub, .vd-panel__row-note, .vd-panel__no-fees-sub, .vd-panel__secure, .vd-optional-account, .vd-why__item-desc, .vd-success__hint, .vd-guest__header p) { font-size: 14px; line-height: 1.65; }
+.vd-page :is(.vd-info-box__title, .vd-panel__pay-title, .vd-panel__no-fees-title, .vd-slider__opt-label, .vd-slider__opt-amount, .vd-guest__field span, .vd-success__text) { font-size: 15px; }
+.vd-page :is(.vd-input, .vd-guest__field input) { font-size: 16px; min-height: 48px; }
+.vd-page :is(.vd-slider__opt-pct, .vd-panel__total-row, .vd-panel__pay-now) { font-size: 16px; }
+
+.guide-page :is(.guide-timeline-desc, .guide-section-head p, .guide-status-sub, .guide-faq-answer, .guide-cta-content p) { font-size: 16px; line-height: 1.8; }
+.guide-page :is(.guide-timeline-title, .guide-cta-content h3) { font-size: 23px; line-height: 1.4; }
+.guide-page :is(.guide-faq-question, .guide-cta-btn) { font-size: 17px; }
+.guide-page :is(.guide-hero-badge, .guide-badge-pill, .guide-status-badge) { font-size: 13px; }
+.contact-page :is(.contact-panel-sub, .contact-feat-card p, .contact-info-text p, .contact-hero-overlay p, .contact-success-msg, .contact-info-value) { font-size: 16px; line-height: 1.75; }
+.contact-page :is(.contact-panel-title, .contact-hero-overlay h2) { font-size: 25px; line-height: 1.4; }
+.contact-page .contact-feat-card h4 { font-size: 18px; }
+.contact-page :is(.contact-info-label, .contact-hero-badge, .contact-form-note) { font-size: 13px; }
+.contact-page :is(.contact-form input, .contact-form textarea, .contact-submit-btn) { font-size: 16px; }
+.hist-page :is(.hist-hero__sub, .hist-card__detail, .hist-empty__text) { font-size: 16px; }
+.ve-page :is(.ve-sub, .ve-desc, .ve-btn) { font-size: 16px; line-height: 1.7; }
+
+/* Account forms and footer text stay comfortably readable on smaller screens. */
+.am-overlay .am-title { font-size: 28px; }
+.am-overlay :is(.am-sub, .am-check, .am-error, .am-switch-text, .am-switch-btn, .am-forgot) { font-size: 14px; line-height: 1.6; }
+.am-overlay .am-label { font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.am-overlay .am-input { font-size: 16px; min-height: 46px; }
+.am-overlay .am-input::placeholder { font-size: 15px; }
+.am-overlay :is(.am-submit, .am-social-btn) { font-size: 15px; min-height: 46px; font-weight: 600; }
+.am-overlay .am-divider { font-size: 12px; }
+.am-overlay .am-form { gap: 12px; }
+.am-overlay .am-image-desc { font-size: 17px; }
+.footer .footer__col-title { font-size: 16px; font-weight: 600; }
+.footer :is(.footer__brand-desc, .footer__link, .footer__newsletter-desc, .footer__address) { font-size: 14px; line-height: 1.75; }
+.footer .footer__newsletter-input { font-size: 15px; min-height: 48px; }
+.footer :is(.footer__copyright, .footer__credit) { font-size: 13px; }
+.footer .footer__links { gap: 12px; }
+
+[dir='rtl'] :is(.home-page, .sr-page, .vd-page, .guide-page, .contact-page, .hist-page, .ve-page, .am-overlay) :is(h1, h2, h3, h4) { letter-spacing: 0; line-height: 1.45; }
+@media (max-width: 1100px) and (min-width: 769px) {
+  .home-page .hero__title { font-size: 54px; }
+  .home-page .hero__cta { padding-inline: 18px; }
+}
+@media (max-width: 768px) {
+  .contact-page .contact-hero-img-wrap { height: auto; min-height: 260px; }
+  .contact-page .contact-hero-img-wrap img { position: absolute; inset: 0; }
+  .contact-page .contact-hero-overlay { position: relative; min-height: 260px; }
+  .home-page .hero__title { font-size: clamp(42px, 9vw, 60px); }
+  .home-page .hero__subtitle { font-size: 17px; }
+  .home-page .hero__eyebrow { font-size: 12px; }
+  .home-page .hero__trust { font-size: 13px; }
+  .home-page .hero__postcard { width: 132px; }
+  .home-page .hero__postcard span { font-size: 12px; }
+  .home-page .hero__photo-caption { font-size: 12px; max-width: 145px; }
+  .home-page .hero__visual-note { font-size: 12px; }
+  .home-page .booking__field { min-width: 0; }
+  .home-page .booking__label { font-size: 13px; }
+  .home-page .booking__tab { font-size: 14px; line-height: 1.45; }
+  .home-page .booking__input--date { font-size: 16px !important; padding-inline: 8px; }
+  .home-page .features__item { flex-direction: column; gap: 12px; }
+  .home-page .features__title { font-size: 16px; }
+  .home-page .features__desc { font-size: 14px; }
+  .home-page .features__icon { width: 42px; height: 42px; }
+  .home-page .categories__title { font-size: 34px; }
+  .home-page .categories__subtitle { font-size: 16px; }
+  .home-page .promo__title { font-size: 34px; }
+  .home-page .promo__desc { font-size: 16px; }
+  .footer .footer__newsletter-input { font-size: 16px; }
+}
+@media (max-width: 600px) {
+  .home-page .hero__actions { align-items: stretch; flex-direction: column; }
+  .home-page .hero__cta { width: 100%; font-size: 15px; }
+  .home-page .booking__fields { grid-template-columns: 1fr; }
+  .home-page .hero__postcard span { font-size: 11px; }
+  .footer .footer__top { grid-template-columns: 1fr; }
+  .footer .footer__col { grid-column: 1 / -1; }
+  .contact-page .contact-hero-overlay { padding: 24px; }
+}

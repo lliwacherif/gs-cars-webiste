@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FiX, FiEye, FiEyeOff, FiAlertCircle, FiMail } from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
-import { brandLogo, BRAND_NAME } from '../../brand'
+import { brandLogoLight as brandLogo, BRAND_NAME } from '../../brand'
 import './AuthModal.css'
 
 // ─── Social OAuth Buttons ─────────────────────────────────────────────────────

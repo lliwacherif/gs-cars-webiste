@@ -24,11 +24,12 @@ export default function PromoBanner() {
           </div>
           <div className="promo__right">
             <img
-              src="/promo_car.png"
-              alt="GS-Cars"
+              src="/tunisia/sidi-bou-said.webp"
+              alt={t('hero.postcardAlt', 'Ruelle blanche et bleue de Sidi Bou Saïd avec vue sur la Méditerranée')}
               className="promo__img"
               loading="lazy"
             />
+            <span className="promo__destination">{t('hero.destinationLabel', 'Sidi Bou Saïd, Tunisie')}</span>
           </div>
         </div>
       </div>

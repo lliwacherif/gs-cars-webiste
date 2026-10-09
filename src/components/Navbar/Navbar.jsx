@@ -4,7 +4,7 @@ import { FiUser, FiPhone, FiChevronDown, FiMenu, FiX, FiLogOut, FiGrid, FiClock 
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import CurrencyToggle from '../CurrencyToggle/CurrencyToggle'
-import { brandLogo, BRAND_NAME, BRAND_PHONES } from '../../brand'
+import { brandLogo, brandLogoLight, BRAND_NAME, BRAND_PHONES } from '../../brand'
 import './Navbar.css'
 
 export default function Navbar() {
@@ -50,7 +50,7 @@ export default function Navbar() {
       <div className="navbar__inner container">
         {/* Logo */}
         <Link to="/" className="navbar__logo">
-          <img src={brandLogo} alt={BRAND_NAME} className="navbar__logo-img" />
+          <img src={location.pathname === '/admin' ? brandLogo : brandLogoLight} alt={BRAND_NAME} className="navbar__logo-img" />
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -95,10 +95,10 @@ export default function Navbar() {
                   position: 'absolute',
                   top: 'calc(100% + 6px)',
                   right: 0,
-                  background: '#18181c',
-                  border: '1px solid rgba(212, 160, 23, 0.3)',
+                  background: 'var(--black-2)',
+                  border: '1px solid var(--black-4)',
                   borderRadius: 8,
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
+                  boxShadow: '0 8px 24px rgba(16,58,83,0.12)',
                   zIndex: 200,
                   overflow: 'hidden',
                   minWidth: 140,
@@ -115,8 +115,8 @@ export default function Navbar() {
                     width: '100%',
                     padding: '9px 14px',
                     border: 'none',
-                    background: lang === 'fr' ? 'rgba(212,160,23,0.15)' : 'transparent',
-                    color: '#ffffff',
+                    background: lang === 'fr' ? 'var(--gold-pale)' : 'transparent',
+                    color: 'var(--white)',
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -136,8 +136,8 @@ export default function Navbar() {
                     width: '100%',
                     padding: '9px 14px',
                     border: 'none',
-                    background: lang === 'ar' ? 'rgba(212,160,23,0.15)' : 'transparent',
-                    color: '#ffffff',
+                    background: lang === 'ar' ? 'var(--gold-pale)' : 'transparent',
+                    color: 'var(--white)',
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPhone, FiMail, FiSend, FiFacebook, FiInstagram, FiLinkedin, FiTwitter } from 'react-icons/fi'
 import { useLanguage } from '../../context/LanguageContext'
-import { brandLogo, BRAND_NAME, BRAND_EMAIL, BRAND_EMAIL_LABEL, BRAND_PHONES } from '../../brand'
+import { brandLogoLight as brandLogo, BRAND_NAME, BRAND_EMAIL, BRAND_EMAIL_LABEL, BRAND_PHONES } from '../../brand'
 import './Footer.css'
 
 const YEAR = new Date().getFullYear()

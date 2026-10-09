@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import AdminStrip from '../../components/AdminStrip/AdminStrip'
 import Footer from '../../components/Footer/Footer'
 import { useLanguage } from '../../context/LanguageContext'
-import { brandLogo, BRAND_NAME, BRAND_EMAIL, BRAND_EMAIL_LABEL, BRAND_PHONES } from '../../brand'
+import { brandLogoLight as brandLogo, BRAND_NAME, BRAND_EMAIL, BRAND_EMAIL_LABEL, BRAND_PHONES } from '../../brand'
 import './Contact.css'
 
 export default function Contact() {

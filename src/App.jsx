@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { useLanguage } from './context/LanguageContext'
 import AuthModal from './components/AuthModal/AuthModal'
 import './index.css'
 import './App.css'
@@ -13,10 +14,20 @@ import VerifyEmail from './pages/VerifyEmail/VerifyEmail'
 import Guide from './pages/Guide/Guide'
 import Contact from './pages/Contact/Contact'
 
+function RouteLoading() {
+  const { t } = useLanguage()
+  return (
+    <div className="route-loading" role="status">
+      <span className="route-loading__spinner" aria-hidden="true" />
+      <p>{t('app.loading', 'Chargement…')}</p>
+    </div>
+  )
+}
+
 /** Must be rendered inside AuthProvider */
 function AdminRoute() {
   const { user, loading } = useAuth()
-  if (loading) return null
+  if (loading) return <RouteLoading />
   if (!user) return <Navigate to="/" replace />
   if (user.role !== 'admin') return <Navigate to="/" replace />
   return <Admin />
@@ -24,7 +35,7 @@ function AdminRoute() {
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
-  if (loading) return null
+  if (loading) return <RouteLoading />
   if (!user) return <Navigate to="/" replace />
   return children
 }
@@ -68,7 +79,9 @@ function AppRoutes() {
         <Route path="/guide" element={<Guide />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<AdminRoute />} />
+        <Route path="/root/dashboard" element={<Navigate to="/admin" replace />} />
         <Route path="/historique" element={<PrivateRoute><Historique /></PrivateRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <AuthModal />
     </>

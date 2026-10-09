@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight, FiMapPin, FiSun } from 'react-icons/fi'
 import { useLanguage } from '../../context/LanguageContext'
 import './Hero.css'
 
@@ -8,22 +8,10 @@ export default function Hero() {
 
   return (
     <section className="hero" id="accueil">
-      <div className="hero__bg">
-        <picture>
-          <source media="(max-width: 768px)" srcSet="/hero-mobile.png" />
-          <img
-            src="/hero_background.png"
-            alt="Voiture premium sur la côte tunisienne"
-            className="hero__bg-img"
-            fetchPriority="high"
-          />
-        </picture>
-        <div className="hero__overlay" />
-      </div>
       <div className="hero__content container">
         <div className="hero__copy">
           <p className="hero__eyebrow">
-            <span className="hero__eyebrow-line" aria-hidden="true" />
+            <FiSun size={17} aria-hidden="true" />
             {t('hero.badge', 'Votre route commence ici')}
           </p>
           <h1 className="hero__title">
@@ -51,6 +39,21 @@ export default function Hero() {
             <span>{t('hero.trustTwo', 'Tarifs transparents')}</span>
             <span>{t('hero.trustThree', 'Assistance 24/7')}</span>
           </div>
+        </div>
+        <div className="hero__visual">
+          <div className="hero__sun" aria-hidden="true" />
+          <div className="hero__photo">
+            <img src="/tunisia/coastal-drive.webp" alt={t('hero.imageAlt', 'Une voiture sur la côte tunisienne, entre mer et maisons blanches aux portes bleues')} className="hero__bg-img" fetchPriority="high" width="1672" height="941" />
+            <div className="hero__photo-caption">
+              <FiMapPin size={17} aria-hidden="true" />
+              <span>{t('hero.photoCaption', 'La Tunisie, à votre rythme')}</span>
+            </div>
+          </div>
+          <div className="hero__postcard">
+            <img src="/tunisia/sidi-bou-said.webp" alt={t('hero.postcardAlt', 'Ruelle blanche et bleue de Sidi Bou Saïd avec vue sur la Méditerranée')} width="563" height="750" />
+            <span>{t('hero.postcardLabel', 'Sidi Bou Saïd')} <FiArrowRight size={14} aria-hidden="true" /></span>
+          </div>
+          <span className="hero__visual-note">{t('hero.visualNote', 'Un air de Méditerranée.')}</span>
         </div>
       </div>
     </section>

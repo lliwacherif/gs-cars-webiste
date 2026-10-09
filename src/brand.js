@@ -3,6 +3,7 @@ import logo from './assets/logo gscars.jpg'
 const ltr = (value) => `\u200E${value}`
 
 export const brandLogo = logo
+export const brandLogoLight = '/tunisia/gscars-logo.png'
 export const BRAND_NAME = 'GS-Cars'
 export const BRAND_EMAIL = 'gscarslocation@outlook.fr'
 export const BRAND_EMAIL_LABEL = ltr(BRAND_EMAIL)
